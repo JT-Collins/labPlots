@@ -23,11 +23,7 @@ showtext::showtext_auto(enable = TRUE)
 # Set colour options ------------------------------------------------------
 opts <- options()  # save old options
 
-uofl_col <- c("#8B9DA1", "#AD0000", "#004E74", "#FEBE10" ,"#00A89D","#7A6C53",  "#AAB43A", "#D9C982")
-options(ggplot2.continuous.colour="viridis")
-options(ggplot2.continuous.fill = "viridis")
-options(ggplot2.discrete.colour = uofl_col )
-options(ggplot2.discrete.fill = uofl_col )
+
 
 
 
@@ -37,6 +33,11 @@ options(ggplot2.discrete.fill = uofl_col )
 
 lab_style <- function() {
 
+  uofl_col <- c("#8B9DA1", "#AD0000", "#004E74", "#FEBE10" ,"#00A89D","#7A6C53",  "#AAB43A", "#D9C982")
+  options(ggplot2.continuous.colour="viridis")
+  options(ggplot2.continuous.fill = "viridis")
+  options(ggplot2.discrete.colour = uofl_col )
+  options(ggplot2.discrete.fill = uofl_col )
 
   font <- "Comic Sans MS" #"assistant"
   showtext::showtext_opts(dpi = 96)
