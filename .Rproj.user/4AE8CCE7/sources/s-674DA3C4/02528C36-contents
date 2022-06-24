@@ -6,3 +6,10 @@ mtcars |>
   ggplot2::ggplot() + 
   ggplot2::geom_point(aes(x=cyl, y=mpg)) +
   lab_style()
+
+
+if (!require(devtools)) {
+  install.packages('devtools')
+}    
+# If your repo is on GitHub:
+devtools::install_github('JT-Collins/labPlots')
