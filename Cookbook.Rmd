@@ -46,46 +46,28 @@ devtools::install_github("JT-Collins/labPlots")
 ```
 
 ## Seting up font and colours
-Depending on the plot you may need to change the colours used, however, as a default we will use the UofL colour palette. We will also use a different font. Both of these things need to be set at the start of the script - simply copy and run the code!
+You will need to ensure you have the **Gotham Book** font installed on your computer. This font is used in the lab Power Point and Poster templates as well as the plots for consistency. 
 
-<!-- ```{r} -->
-<!-- # Set font options -------------------------------------------------------- -->
-
-<!-- sysfonts::font_add(family = "assistant", -->
-<!--          regular = "~/Box/Lab Docs/R projects/aesthetics/fonts/Assistant-Regular.otf", -->
-<!--          italic = "~/Box/Lab Docs/R projects/aesthetics/fonts/SourceSansPro-Italic.ttf", -->
-<!--          bold = "~/Box/Lab Docs/R projects/aesthetics/fonts/Assistant-SemiBold.otf") -->
-
-<!-- showtext::showtext_auto(enable = TRUE) -->
-
-
-<!-- # Set colour options ------------------------------------------------------ -->
-<!-- uofl_col <- c("#8B9DA1", "#AD0000", "#004E74", "#FEBE10" ,"#00A89D","#7A6C53",  "#AAB43A", "#D9C982") -->
-<!-- options(ggplot2.continuous.colour="viridis") -->
-<!-- options(ggplot2.continuous.fill = "viridis") -->
-<!-- options(ggplot2.discrete.colour = uofl_col ) -->
-<!-- options(ggplot2.discrete.fill = uofl_col ) -->
-<!-- ``` -->
-
+Depending on the plot you may want/need to change the colours used, however, as a default we will use the UofL colour palette.
 
 
 
 ## How does the labPlot package work?
-The package has just one function, lab_style().
+The package has just one function, `lab_style()`.
 
-lab_style(): has no arguments and is added to the ggplot ‘chain’ after you have created a plot. What it does is generally makes text size, font and colour, axis lines, axis text, margins and many other standard chart components into Lab style.
+`lab_style()`: has no arguments and is added to the ggplot ‘chain’ after you have created a plot. What it does is generally makes text size, font and colour, axis lines, axis text, margins and many other standard chart components into Lab style.
 
 Note that colours for lines in the case of a line chart or bars for a bar chart, are based on the UofL colour scheme but can be set to other colours where needed.
 
-The code below shows how the lab_style() should be used within standard chart-production workflow. This is an example for a very simple line chart, using data from the gapminder package.
+The code below shows how the `lab_style()` should be used within standard chart-production workflow. This is an example for a very simple line chart, using data from the gapminder package.
 
 ```{r}
 #Data for chart from gapminder package
-line_df <- gapminder %>%
+line_df <- gapminder |>
   filter(country == "Malawi") 
 
 #Make plot
-line <- ggplot(line_df, aes(x = year, y = lifeExp,colour = country)) +
+line <- ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
   geom_line( size = 1.2) +
   lab_style() +
   theme(legend.position = "none") + # removes legend - default is legend on the right
@@ -132,7 +114,7 @@ Here are the function arguments: ggsave(plot_name, save_filepath, device = ragg:
 
 more information can be found by typing `?ggsave()` into the console.
 
-Once you have created your plot and are relatively happy with it, you can use the ggsave() function to make the final adjustments and save out your chart so that you can look at it outside RStudio.
+Once you have created your plot and are relatively happy with it, you can use the `ggsave()` function to make the final adjustments and save out your chart so that you can look at it outside RStudio.
 
 It is important to mention that it is a good idea to do this early on because the position of the text and other elements do not render accurately in the RStudio Plots panel because this depends on the size and aspect ratio you want your plot to appear, so saving it out and opening up the files give you an accurate representation of how the graphic looks.
 
@@ -168,7 +150,7 @@ line
 
 ```{r}
 #Prepare data
-multiple_line_df <- gapminder %>%
+multiple_line_df <- gapminder |>
   filter(country == "Italy" | country == "United States" | country == "Afghanistan" ) 
 
 #Make plot
@@ -179,7 +161,8 @@ multiple_line <- ggplot(multiple_line_df, aes(x = year, y = lifeExp, colour = co
   labs(title="Living longer",
        subtitle = "Life expectancy in Italy, the US, and Afghanistan",
        x = NULL,
-       y = NULL)
+       y = NULL) +
+  NULL
 ```
 
 
@@ -191,5 +174,101 @@ If we wanted to move the legend to the bottom of the figure we could simply do t
 
 ```{r}
 multiple_line + theme(legend.position = "bottom")
+```
+
+## Make a bar chart
+
+```{r}
+#Prepare data
+bar_df <- gapminder |>
+  filter(year == 2007 & continent == "Africa") |>
+  arrange(desc(lifeExp)) |> # This orders the data - try removing it and running
+  head(5) # Selects the top 5
+
+#Make plot
+bars <- ggplot(bar_df, aes(x = country, y = lifeExp, fill=country)) +
+  geom_bar(stat="identity", 
+           position="identity" 
+           ) +
+  lab_style() +
+  scale_y_continuous(limits = c(0,80), expand = c(0, 0)) +
+  labs(title="Reunion is highest",
+       subtitle = "Highest African life expectancy, 2007",
+       x = NULL,
+       y = NULL) +
+  NULL
+```
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+bars
+```
+
+In this case, colouring each country a different colour makes little sense and the legend is superfluous. We could also add some horizontal lines to help the eye.
+
+
+```{r}
+#Prepare data
+bar_df <- gapminder |>
+  filter(year == 2007 & continent == "Africa") |>
+  arrange(desc(lifeExp)) |> # This orders the data - try removing it and running
+  head(5) # Selects the top 5
+
+#Make plot
+bars <- ggplot(bar_df, aes(x = country, y = lifeExp)) + # NOTE: removed fill from aes
+  geom_bar(stat="identity", 
+           position="identity",
+           fill="#1380A1" # specified what colour we want
+           ) +
+  lab_style() +
+  theme(legend.position = "none") +
+  theme(panel.grid.major.y = element_line(color="#cbcbcb")) + 
+  scale_y_continuous(limits = c(0,80), expand = c(0, 0)) +
+  labs(title="Reunion is highest",
+       subtitle = "Highest African life expectancy, 2007",
+       x = NULL,
+       y = NULL) +
+  NULL
+```
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+bars
+```
+
+## Make a stacked bar chart
+
+```{r}
+#prepare data
+stacked_df <- gapminder %>% 
+  filter(year == 2007) %>%
+  mutate(lifeExpGrouped = cut(lifeExp, 
+                    breaks = c(0, 50, 65, 80, 90),
+                    labels = c("Under 50", "50-65", "65-80", "80+"))) %>%
+  group_by(continent, lifeExpGrouped) %>%
+  summarise(continentPop = sum(as.numeric(pop)))
+
+#set order of stacks by changing factor levels
+stacked_df$lifeExpGrouped = factor(stacked_df$lifeExpGrouped, levels = rev(levels(stacked_df$lifeExpGrouped)))
+
+#create plot
+stacked_bars <- ggplot(data = stacked_df, 
+                       aes(x = continent,
+                           y = continentPop,
+                           fill = lifeExpGrouped)) +
+  geom_bar(stat = "identity", 
+           position = "fill") +
+  lab_style() +
+  scale_y_continuous(labels = scales::percent, expand = c(0, 0)) +
+  labs(title = "How life expectancy varies",
+       subtitle = "% of population by life expectancy band, 2007",
+       x = NULL,
+       y = NULL) +
+  theme(legend.position = "top", 
+        legend.justification = "left",
+        legend.title=element_blank()) +
+  guides(fill = guide_legend(reverse = TRUE))
+```
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+stacked_bars
 ```
 
