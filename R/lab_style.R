@@ -38,13 +38,13 @@ options(ggplot2.discrete.fill = uofl_col )
 lab_style <- function() {
 
 
-  font <- "assistant"
+  font <- "Comic Sans MS" #"assistant"
   showtext::showtext_opts(dpi = 96)
 
   ggplot2::theme(
 
     # Text format:
-    text = ggplot2::element_text(family = "assistant", size = 12, color = "#2b2b2b", lineheight = 0.8),
+    text = ggplot2::element_text(family = font, size = 12, color = "#2b2b2b", lineheight = 0.8),
     # This sets the font, size, type and colour of text for the chart's title
     plot.title = ggplot2::element_text(
       family = font,
@@ -62,7 +62,7 @@ lab_style <- function() {
       margin = ggplot2::margin(0, 0, 15, 0)
     ),
     plot.caption = ggplot2::element_text(
-      family = "assistant", size = 12, hjust = 1,
+      family = font, size = 12, hjust = 1,
       vjust = 1, margin = ggplot2::margin(5, 0, 5, 0, unit = "points")
     ),
 
@@ -93,21 +93,21 @@ lab_style <- function() {
     ),
     axis.text.x = ggplot2::element_text(margin = ggplot2::margin(5, b = 10)),
     axis.ticks = ggplot2::element_blank(),
-    axis.title.y = ggplot2::element_text(family = "assistant",
+    axis.title.y = ggplot2::element_text(family = font,
                                          size = 12,
                                          hjust = 1,
                                          angle = 90,
                                          margin = ggplot2::margin(0, 5, 5, 0, unit = "pt")),
-    axis.title.y.right = ggplot2::element_text(family = "assistant",
+    axis.title.y.right = ggplot2::element_text(family = font,
                                                size = 12,
                                                hjust = 1,
                                                angle = 90,
                                                margin = ggplot2::margin(0, 0, 0, 3, unit = "pt")),
-    axis.title.x = ggplot2::element_text(family = "assistant",
+    axis.title.x = ggplot2::element_text(family = font,
                                          size = 12,
                                          hjust = 1,
                                          margin = ggplot2::margin(5, 0, 0, 0, unit = "pt")),
-    axis.title.x.top = ggplot2::element_text(family = "assistant",
+    axis.title.x.top = ggplot2::element_text(family = font,
                                              margin = ggplot2::margin(0, 0, 3, 0, unit = "pt")),
     axis.line = ggplot2::element_line(size = 0.8, color = "grey30"),
 

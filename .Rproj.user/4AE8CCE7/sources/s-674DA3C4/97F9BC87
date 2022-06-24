@@ -3,7 +3,7 @@
     "path": "C:/Users/jtcoll06/Box/Lab Docs/R projects/aesthetics/labPlots/Cookbook.Rmd",
     "project_path": "Cookbook.Rmd",
     "type": "r_markdown",
-    "hash": "1962007668",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1656087092650.0,
@@ -13,16 +13,16 @@
         "tempName": "Untitled2",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "96,69",
-        "scrollLine": "84",
-        "last_setup_crc32": "674DA3C4ddd2de3c"
+        "cursorPosition": "180,16",
+        "scrollLine": "162",
+        "last_setup_crc32": ""
     },
     "folds": "",
-    "lastKnownWriteTime": 1656095971,
+    "lastKnownWriteTime": 1656099520,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1656095971677,
+    "last_content_update": 1656099520786,
     "read_only": false,
     "read_only_alternatives": []
 }

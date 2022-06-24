@@ -89,8 +89,11 @@ line <- ggplot(line_df, aes(x = year, y = lifeExp,colour = country)) +
   lab_style() +
   theme(legend.position = "none") + # removes legend - default is legend on the right
   ylim(0,50) +
+  scale_y_continuous(limits = c(0,85), expand = c(0, 0)) + # limits sets y axis limits and expand removes white space (compare to previos plot). Feel free to delete this to see the default behaviour!
   labs(title="Living longer",
-       subtitle = "Life expectancy in Malawi 1952-2007") +
+       subtitle = "Life expectancy in Malawi 1952-2007",
+       x = "",
+       y = "") +
   NULL
 ```
 
@@ -117,9 +120,13 @@ After adding the lab_style() to your chart there is one more step to get your pl
 Here are the function arguments: ggsave(plot_name, save_filepath, device = ragg::agg_png, res = 300, scaling = 1, width = x, height = x, units = "in")
 
 `plot_name`: the variable name that you have called your plot, for example for the chart example above plot_name would be "line". You can also leave this blank and ggsave will save the last plot.
+
 `save_filepath`: the precise filepath that you want your graphic to save to, including the `.png` extension at the end. This does depend on your working directory and if you are in a specific R project. An example filepath would be: `Desktop/R_projects/charts/line_chart.png`
+
 `width, height, units`: Plot size in units ("in", "cm", "mm", or "px"). If not supplied, uses the size of current graphics device.
+
 `device`: `agg_png` provides improved saving and scaling for png files.
+
 `res`: the resolution of the figure.
 
 more information can be found by typing `?ggsave()` into the console.
@@ -140,10 +147,12 @@ line <- ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
   geom_line(size = 1.2) +
   lab_style() +
   theme(legend.position = "none") + # removes legend - default is legend on the right
-  scale_y_continuous(limits = c(0,85), expand = c(0, 0)) + # limits sets y axis limits and expand removes white space (compare to previos plot). Feel free to delete this to see the default behaviour!
+  scale_y_continuous(limits = c(0,85), expand = c(0, 0)) +
   labs(title="Living longer",
        subtitle = "Life expectancy in Italy 1952-2007",
-       caption = "Data from gapmider package") +
+       caption = "Data from gapmider package",
+       x = NULL,
+       y = NULL) +
   
   NULL
 
@@ -159,19 +168,27 @@ line
 ```{r}
 #Prepare data
 multiple_line_df <- gapminder %>%
-  filter(country == "Italy" | country == "United States") 
+  filter(country == "Italy" | country == "United States" | country == "Afghanistan" ) 
 
 #Make plot
 multiple_line <- ggplot(multiple_line_df, aes(x = year, y = lifeExp, colour = country)) +
-  geom_line(size = 1) +
-  geom_hline(yintercept = 0, size = 1, colour="#333333") +
-  scale_colour_manual(values = c("#FAAB18", "#1380A1")) +
+  geom_line(size = 1.2) +
   lab_style() +
+  scale_y_continuous(limits = c(0,85), expand = c(0, 0)) +
   labs(title="Living longer",
-       subtitle = "Life expectancy in China and the US")
+       subtitle = "Life expectancy in Italy, the US, and Afghanistan",
+       x = NULL,
+       y = NULL)
 ```
 
 
 ```{r, echo=FALSE, message = FALSE, warning = FALSE}
 multiple_line
 ```
+
+If we wanted to move the legend to the bottom of the figure we could simply do the following:
+
+```{r}
+multiple_line + theme(legend.position = "bottom")
+```
+
