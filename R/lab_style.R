@@ -25,14 +25,15 @@ showtext::showtext_auto(enable = TRUE)
 uofl_col <- c("#8B9DA1", "#AD0000", "#004E74", "#FEBE10" ,"#00A89D","#7A6C53",  "#AAB43A", "#D9C982")
 
 opts <- options()  # save old options
-options(ggplot2.continuous.colour="viridis")
-options(ggplot2.continuous.fill = "viridis")
-options(ggplot2.discrete.colour = uofl_col )
-options(ggplot2.discrete.fill = uofl_col )
+
 
 # Modify ggplot theme -----------------------------------------------------
 
 lab_style <- function() {
+  options(ggplot2.continuous.colour="viridis")
+  options(ggplot2.continuous.fill = "viridis")
+  options(ggplot2.discrete.colour = uofl_col )
+  options(ggplot2.discrete.fill = uofl_col )
   font <- "assistant"
   showtext::showtext_opts(dpi = 96)
 
