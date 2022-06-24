@@ -10,24 +10,6 @@
 #' lab_style()
 
 
-# load or install & load all packages -------------------------------------
-# packages <-
-#   c("showtext", "scales", "ragg")
-#
-# package.check <- lapply(
-#   packages,
-#   FUN = function(x)
-#   {
-#     if (!require(x, character.only = TRUE))
-#     {
-#       install.packages(x, dependencies = TRUE,
-#                        repos = "http://cran.us.r-project.org")
-#       library(x, character.only = TRUE)
-#     }
-#   }
-# )
-
-
 # Set font options --------------------------------------------------------
 
 sysfonts::font_add(family = "assistant",
@@ -42,23 +24,11 @@ showtext::showtext_auto(enable = TRUE)
 
 uofl_col <- c("#8B9DA1", "#AD0000", "#004E74", "#FEBE10" ,"#00A89D","#7A6C53",  "#AAB43A", "#D9C982")
 
-# scale_fill_uofl <- function(...){
-#   scales::discrete_scale("fill","Publication",manual_pal(values = uofl_col), ...)
-# }
-#
-# scale_colour_uofl <- function(...){
-#   scales::discrete_scale("colour","Publication",manual_pal(values = uofl_col), ...)
-# }
-
 opts <- options()  # save old options
 options(ggplot2.continuous.colour="viridis")
 options(ggplot2.continuous.fill = "viridis")
 options(ggplot2.discrete.colour = uofl_col )
 options(ggplot2.discrete.fill = uofl_col )
-
-# scale_colour_discrete <- scale_colour_uofl
-# scale_fill_discrete <- scale_fill_uofl
-
 
 # Modify ggplot theme -----------------------------------------------------
 
@@ -68,60 +38,96 @@ lab_style <- function() {
 
   ggplot2::theme(
 
-    #Text format:
-    text = ggplot2::element_text(family = "assistant", size = 12, color = "#2b2b2b", lineheight=0.8),
-    #This sets the font, size, type and colour of text for the chart's title
-    plot.title = ggplot2::element_text(family=font,
-                                       size=20,
-                                       face="bold",
-                                       color="#222222",
-                                       margin = ggplot2::margin(0,0,7.5,0, unit = "pt")),
-    #This sets the font, size, type and colour of text for the chart's subtitle, as well as setting a margin between the title and the subtitle
-    plot.subtitle = ggplot2::element_text(family=font,
-                                          size=12,
-                                          margin=ggplot2::margin(0,0,15,0)),
-    plot.caption = ggplot2::element_text(family = "assistant", size = 12, hjust = 1,
-                                                         vjust = 1,margin = ggplot2::margin(5,0,5,0, unit = "points")),
+    # Text format:
+    text = ggplot2::element_text(family = "assistant", size = 12, color = "#2b2b2b", lineheight = 0.8),
+    # This sets the font, size, type and colour of text for the chart's title
+    plot.title = ggplot2::element_text(
+      family = font,
+      size = 20,
+      face = "bold",
+      color = "#222222",
+      margin = ggplot2::margin(0, 0, 7.5, 0, unit = "pt")
+    ),
+    # This sets the font, size, type and colour of text for the chart's subtitle, as well as setting
+    # a margin between the title and the subtitle
 
-    #Legend format
-    #This sets the position and alignment of the legend, removes backround for it and sets the requirements for any text within the legend. The legend may often need some more manual tweaking when it comes to its exact position based on the plot coordinates.
+    plot.subtitle = ggplot2::element_text(
+      family = font,
+      size = 12,
+      margin = ggplot2::margin(0, 0, 15, 0)
+    ),
+    plot.caption = ggplot2::element_text(
+      family = "assistant", size = 12, hjust = 1,
+      vjust = 1, margin = ggplot2::margin(5, 0, 5, 0, unit = "points")
+    ),
+
+    # Legend format
+    # This sets the position and alignment of the legend, removes background for it and sets the
+    # requirements for any text within the legend. The legend may often need some more manual
+    # tweaking when it comes to its exact position based on the plot coordinates.
+
     legend.position = "right",
     legend.text.align = 0,
     legend.background = ggplot2::element_blank(),
-    #legend.title = ggplot2::element_blank(),
     legend.key = ggplot2::element_blank(),
-    legend.text = ggplot2::element_text(family=font,
-                                        size=12,
-                                        color="#222222"),
+    legend.text = ggplot2::element_text(
+      family = font,
+      size = 12,
+      color = "#222222"
+    ),
 
-    #Axis format
-    #This sets the text font, size and colour for the axis test, as well as setting the margins and removes lines and ticks. In some cases, axis lines and axis ticks are things we would want to have in the chart - the cookbook shows examples of how to do so.
-    #axis.title = ggplot2::element_blank(),
-    axis.text = ggplot2::element_text(family=font,
-                                      size=12,
-                                      color="#222222"),
-    axis.text.x = ggplot2::element_text(margin=ggplot2::margin(5, b = 10)),
+    # Axis format
+    # This sets the text font, size and colour for the axis text, as well as setting the margins
+    # and removes lines and ticks. In some cases, axis lines and axis ticks are things we would
+    # want to have in the chart - the cookbook shows examples of how to do so.
+
+    axis.text = ggplot2::element_text(
+      family = font,
+      size = 12,
+      color = "#222222"
+    ),
+    axis.text.x = ggplot2::element_text(margin = ggplot2::margin(5, b = 10)),
     axis.ticks = ggplot2::element_blank(),
-    #axis.line = ggplot2::element_blank(),
-    axis.title.y = ggplot2::element_text(family = "assistant", size = 12, hjust = 1, angle=90, margin = ggplot2::margin(0,5,10,0, unit = "pt")),
-    axis.title.y.right = ggplot2::element_text(family = "assistant", size = 12, hjust = 1, angle=90, margin = ggplot2::margin(0,0,0,3, unit = "pt")),
-    axis.title.x = ggplot2::element_text(family = "assistant", size = 12,hjust = 1,margin = ggplot2::margin(5,0,0,0, unit = "pt")),
-    axis.title.x.top = ggplot2::element_text(family = "assistant", margin = ggplot2::margin(0,0,3,0, unit = "pt")),
-    axis.line= ggplot2::element_line(size=0.8, color = "grey30"),
-    #Grid lines
-    #This removes all minor gridlines and adds major y gridlines. In many cases you will want to change this to remove y gridlines and add x gridlines. The cookbook shows you examples for doing so
+    axis.title.y = ggplot2::element_text(family = "assistant",
+                                         size = 12,
+                                         hjust = 1,
+                                         angle = 90,
+                                         margin = ggplot2::margin(0, 5, 10, 0, unit = "pt")),
+    axis.title.y.right = ggplot2::element_text(family = "assistant",
+                                               size = 12,
+                                               hjust = 1,
+                                               angle = 90,
+                                               margin = ggplot2::margin(0, 0, 0, 3, unit = "pt")),
+    axis.title.x = ggplot2::element_text(family = "assistant",
+                                         size = 12,
+                                         hjust = 1,
+                                         margin = ggplot2::margin(5, 0, 0, 0, unit = "pt")),
+    axis.title.x.top = ggplot2::element_text(family = "assistant",
+                                             margin = ggplot2::margin(0, 0, 3, 0, unit = "pt")),
+    axis.line = ggplot2::element_line(size = 0.8, color = "grey30"),
+
+    # Grid lines
+    # This removes all gridlines. In some cases you will want to change this. The cookbook shows
+    # you examples for doing so
+
     panel.grid.minor = ggplot2::element_blank(),
     panel.grid.major.y = ggplot2::element_blank(),
     panel.grid.major.x = ggplot2::element_blank(),
 
-    #Blank background
-    #This sets the panel background as blank, removing the standard grey ggplot background colour from the plot
+    # Blank background
+    # This sets the panel background as blank, removing the standard grey ggplot background colour
+    # from the plot
+
     panel.background = ggplot2::element_blank(),
 
-    #Strip background (#This sets the panel background for facet-wrapped plots to white, removing the standard grey ggplot background colour and sets the title size of the facet-wrap title to font size 22)
-    #strip.background = ggplot2::element_rect(fill="white"),
+    # Strip background (#This sets the panel background for facet-wrapped plots to white, removing
+    # the standard grey ggplot background colour and sets the title size of the facet-wrap title
+    # to font size 12)
+
     strip.background = ggplot2::element_blank(),
-    strip.text = ggplot2::element_text(size = 12, hjust = 0, colour = "grey10", face = "plain",
-                              margin = ggplot2::margin(4.6,4.6,4.6,4.6, unit = "pt")),
+    strip.text = ggplot2::element_text(
+      size = 12, hjust = 0, colour = "grey10", face = "plain",
+      margin = ggplot2::margin(4.6, 4.6, 4.6, 4.6, unit = "pt")
+    ),
   )
 }

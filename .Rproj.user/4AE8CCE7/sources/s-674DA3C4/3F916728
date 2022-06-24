@@ -3,7 +3,7 @@
     "path": "C:/Users/jtcoll06/Box/Lab Docs/R projects/aesthetics/labPlots/R/lab_style.R",
     "project_path": "R/lab_style.R",
     "type": "r_source",
-    "hash": "4039878238",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1656082253919.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "108,85",
-        "scrollLine": "88"
+        "cursorPosition": "105,51",
+        "scrollLine": "4"
     },
     "folds": "",
-    "lastKnownWriteTime": 1656082390,
+    "lastKnownWriteTime": 1656086792,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1656082391006,
+    "last_content_update": 1656086792081,
     "read_only": false,
     "read_only_alternatives": []
 }

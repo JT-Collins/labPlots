@@ -12,4 +12,4 @@ if (!require(devtools)) {
   install.packages('devtools')
 }    
 # If your repo is on GitHub:
-devtools::install_github('JT-Collins/labPlots')
+devtools::install_github("JT-Collins/labPlots")
