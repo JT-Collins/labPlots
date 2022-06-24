@@ -1,0 +1,8 @@
+data("mtcars")
+library(ggplot2)
+
+
+mtcars |>
+  ggplot2::ggplot() + 
+  ggplot2::geom_point(aes(x=cyl, y=mpg)) +
+  lab_style()
