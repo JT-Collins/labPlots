@@ -12,7 +12,7 @@
 
 # Set font options --------------------------------------------------------
 
-sysfonts::font_add(family = "assistant",
+sysfonts::font_add(family = "Assistant",
          regular = "~/Box/Lab Docs/R projects/aesthetics/fonts/Assistant-Regular.otf",
          italic = "~/Box/Lab Docs/R projects/aesthetics/fonts/SourceSansPro-Italic.ttf",
          bold = "~/Box/Lab Docs/R projects/aesthetics/fonts/Assistant-SemiBold.otf")
@@ -39,7 +39,7 @@ lab_style <- function() {
   options(ggplot2.discrete.colour = uofl_col )
   options(ggplot2.discrete.fill = uofl_col )
 
-  font <- "Comic Sans MS" #"assistant"
+  font <- "Assistant" #"assistant"
   showtext::showtext_opts(dpi = 96)
 
   ggplot2::theme(
