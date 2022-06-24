@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(fig.retina = 1)
+knitr::opts_chunk$set(dev = "ragg_png")
 
 ```
 
