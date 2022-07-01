@@ -11,23 +11,33 @@
 
 
 # Set font options --------------------------------------------------------
+lab_fonts <- function() {
+  if(!require(pacman))install.packages("pacman")
 
-# sysfonts::font_add(family = "Assistant",
-#          regular = "~/Box/Lab Docs/R projects/aesthetics/fonts/Assistant-Regular.otf",
-#          italic = "~/Box/Lab Docs/R projects/aesthetics/fonts/SourceSansPro-Italic.ttf",
-#          bold = "~/Box/Lab Docs/R projects/aesthetics/fonts/Assistant-SemiBold.otf")
+  pacman::p_load('remotes', 'showtext')
+  if (packageVersion("Rttf2pt1") != '1.3.8') {
+    remotes::install_version("Rttf2pt1", version = "1.3.8")
+  }
+
+
+  # sysfonts::font_add(family = "Gotham-Book",
+  #                    regular = "~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF",
+  #                    italic = "~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF",
+  #                    bold = "~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF")
+
+sysfonts::font_add(family = "Gotham-Book",
+          regular = "~/Box/Lab Docs/R projects/aesthetics/fonts/Gotham-Book.otf",
+          italic = "~/Box/Lab Docs/R projects/aesthetics/fonts/GothamBook Italic.otf",
+          bold = "~/Box/Lab Docs/R projects/aesthetics/fonts/Gotham-Bold.otf")
+
+
+  #extrafont::font_import()
 #
-# showtext::showtext_auto(enable = TRUE)
-
+showtext::showtext_auto(enable = TRUE)
+}
 
 # Set colour options ------------------------------------------------------
 #opts <- options()  # save old options
-
-
-
-
-
-
 
 # Modify ggplot theme -----------------------------------------------------
 
@@ -59,11 +69,11 @@ lab_style <- function() {
 
     plot.subtitle = ggplot2::element_text(
       family = font,
-      size = 12,
-      margin = ggplot2::margin(0, 0, 15, 0)
+      size = 14,
+      margin = ggplot2::margin(0, 0, 10, 0)
     ),
     plot.caption = ggplot2::element_text(
-      family = font, size = 12, hjust = 1,
+      family = font, size = 11, hjust = 1,
       vjust = 1, margin = ggplot2::margin(5, 0, 5, 0, unit = "points")
     ),
 
@@ -92,13 +102,14 @@ lab_style <- function() {
       size = 12,
       color = "#222222"
     ),
-    axis.text.x = ggplot2::element_text(margin = ggplot2::margin(5, b = 10)),
-    axis.ticks = ggplot2::element_blank(),
+    axis.text.x = ggplot2::element_text(margin = ggplot2::margin(5.4, 0, 0, 0)),
+    axis.ticks = ggplot2::element_line(color = "gray20"),
+    axis.ticks.length = unit(3,"pt"),
     axis.title.y = ggplot2::element_text(family = font,
                                          size = 12,
                                          hjust = 1,
                                          angle = 90,
-                                         margin = ggplot2::margin(0, 5, 5, 0, unit = "pt")),
+                                         margin = ggplot2::margin(0, 3, 0, 0, unit = "pt")),
     axis.title.y.right = ggplot2::element_text(family = font,
                                                size = 12,
                                                hjust = 1,
@@ -107,10 +118,10 @@ lab_style <- function() {
     axis.title.x = ggplot2::element_text(family = font,
                                          size = 12,
                                          hjust = 1,
-                                         margin = ggplot2::margin(5, 0, 0, 0, unit = "pt")),
+                                         margin = ggplot2::margin(3, 0, 0, 0, unit = "pt")),
     axis.title.x.top = ggplot2::element_text(family = font,
                                              margin = ggplot2::margin(0, 0, 3, 0, unit = "pt")),
-    axis.line = ggplot2::element_line(size = 0.8, color = "grey30"),
+    axis.line = ggplot2::element_line(size = 0.545, color = "black"),
 
     # Grid lines
     # This removes all gridlines. In some cases you will want to change this. The cookbook shows

@@ -2,7 +2,9 @@
 title: "Lab style plots"
 author: "J. Collins"
 date: '2022-06-24'
-output: html_document
+output:
+  rmdformats::robobook:
+    highlight: kate
 ---
 
 ```{r setup, include=FALSE}
@@ -16,29 +18,45 @@ knitr::opts_chunk$set(dev = "ragg_png")
 
 last updated "`r Sys.Date()`"
 
-This repo contains the functions of the `labPlots` package, which once installed locally, provides helpful functions for creating graphics made in ggplot in the style used by the Collins Lab. The package and this doc borrows (steals) heavily from the bbplots package.
+This repo contains the functions of the `labPlots` package, which, once installed locally, provides useful functions for creating graphics made in ggplot in the style used by the Collins Lab. The package and this doc borrows (steals) heavily from the bbplots package and makes use of the ggPrism code for adding P values to plots (as an aside, if you want your plots to look like they were made in GraphPad prism, the ggprism package is for you!).
 
 ## Load all the libraries you need
 
-A few of the steps in this cookbook - and to create charts in R in general - require certain packages to be installed and loaded. So that you do not have to install and load them one by one, you can use the p_load function in the pacman package to load them all at once with the following code.
+A few steps in this cookbook - and to create charts in R in general - require specific packages to be installed and loaded. So that you do not have to install and load them one by one, you can use the p_load function in the Pacman package 
+
 
 ```{r}
-#This line of code installs the pacman page if you do not have it installed - if you do, it simply loads the package
+# This line of code installs the pacman package if you do not have it 
+# installed - if you do, it simply loads the package
 
 if(!require(pacman))install.packages("pacman")
 
-pacman::p_load('dplyr', 'tidyr', 'gapminder',
-               'ggplot2',  'ggalt', 'ragg',
-               'forcats', 'R.utils', 'png', 
-               'grid', 'ggpubr', 'scales',
-               'labPlots')
+pacman::p_load(
+  'dplyr',
+  'tidyr',
+  'gapminder',
+  'ggplot2',
+  'patchwork',
+  'ggalt',
+  'ragg',
+  'forcats',
+  'R.utils',
+  'png',
+  'grid',
+  'ggpubr',
+  'scales',
+  'labPlots',
+  'rstatix',
+  'pander'
+)
 ```
 
 ## Installing labPlots package
 
 `labPlots` is not on CRAN, so you will have to install it directly from Github using `devtools`. 
 
-If you do not have the `devtools` package installed, you will have to run the first line in the code below as well. 
+If you do not have the `devtools` package installed, you will also have to run the first line in the code below. **<span style="color: darkslategray;">Hint - remove the '#' from the first line if you need to install devtools.</span>**
+
 
 ```
 # install.packages("devtools")
@@ -46,20 +64,26 @@ devtools::install_github("JT-Collins/labPlots")
 ```
 
 ## Seting up font and colours
-You will need to ensure you have the **Gotham Book** font installed on your computer. This font is used in the lab Power Point and Poster templates as well as the plots for consistency. 
+You must ensure you have the **Gotham Book** font installed on your computer. This font is used in the lab PowerPoint and Poster templates, as well as the plots for consistency. If not already installed, the **Gotham Book** fonts can be found on BOX `~\Box\Lab Docs\R projects\aesthetics\fonts`. For Windows machines, the fonts can be installed by simply double-clicking. To initiate the fon't in R run `lab_fonts()` following the loading of the `labPlots` package
 
-Depending on the plot you may want/need to change the colours used, however, as a default we will use the UofL colour palette.
-
-
+Depending on the plot, you may want/need to change the colors used. However, as a default, we will use the UofL color palette.
 
 ## How does the labPlot package work?
-The package has just one function, `lab_style()`.
+The package has three functions,`lab_fonts()` as i've mentioned,  `lab_style()`,  and `add_pvalue()`.
 
-`lab_style()`: has no arguments and is added to the ggplot ‘chain’ after you have created a plot. What it does is generally makes text size, font and colour, axis lines, axis text, margins and many other standard chart components into Lab style.
+`lab_fonts()`: Sets fonts to Gotham Book. Run it once at the start of a session.
+
+`lab_style()`: Has no arguments and is added to the ggplot ‘chain’ after you have created a plot. What it does is generally makes text size, font and colour, axis lines, axis text, margins and many other standard chart components into Lab style.
 
 Note that colours for lines in the case of a line chart or bars for a bar chart, are based on the UofL colour scheme but can be set to other colours where needed.
 
+`add_pvalue()` can be used to add the p values to a plot. These need to be calculated first using any suitable method see [Here](https://csdaw.github.io/ggprism/articles/pvalues.html) for details. If you want to use an R package that will output your P value in the correct format, then `rstatix` is what you want. See  [Here](https://github.com/kassambara/rstatix) for in depth info. I will provide examples later on. 
+
 The code below shows how the `lab_style()` should be used within standard chart-production workflow. This is an example for a very simple line chart, using data from the gapminder package.
+
+# Default Figure
+
+Before we load up the fonts and make changes lets look at a default line graph
 
 ```{r}
 #Data for chart from gapminder package
@@ -67,21 +91,76 @@ line_df <- gapminder |>
   filter(country == "Malawi") 
 
 #Make plot
-line <- ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
-  geom_line( size = 1.2) +
+line_old <-
+  ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
+  geom_line() +
+  labs(
+    title = "Living longer",
+    subtitle = "Life expectancy in Malawi 1952-2007",
+    x = "",
+    y = ""
+  ) +
+  NULL
+
+#Make plot
+line_new <-
+  ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
+  geom_line(size = 1.2) +
   lab_style() +
   theme(legend.position = "none") + # removes legend - default is legend on the right
-  ylim(0,50) +
-  scale_y_continuous(limits = c(0,85), expand = c(0, 0)) + # limits sets y axis limits and expand removes white space (compare to previos plot). Feel free to delete this to see the default behaviour!
-  labs(title="Living longer",
-       subtitle = "Life expectancy in Malawi 1952-2007",
-       x = "",
-       y = "") +
+  scale_y_continuous(limits = c(0, 85), expand = c(0, 0)) + # limits sets y axis limits and expand removes white space (compare to previos plot). Feel free to delete this to see the default behaviour!
+  labs(
+    title = "Living longer",
+    subtitle = "Life expectancy in Malawi 1952-2007",
+    x = "",
+    y = ""
+  ) +
   NULL
+
+
 ```
 
 ```{r, echo=FALSE, message = FALSE, warning = FALSE, fig.dim = c(8, 5)}
-line
+line_old
+```
+
+
+## Load our package and set up lab fonts
+
+
+```{r}
+
+pacman::p_load('labPlots')
+```
+
+```{r}
+lab_fonts()
+```
+
+
+Make a new plot with the `lab_style()` along with a few changes for improved clarity.
+
+
+```{r}
+#Make plot
+line_new <-
+  ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
+  geom_line(size = 1.2) +
+  lab_style() +
+  theme(legend.position = "none") + # removes legend - default is legend on the right
+  scale_y_continuous(limits = c(0, 85), expand = c(0, 0)) + # limits sets y axis limits and expand removes white space (compare to previos plot). Feel free to delete this to see the default behaviour!
+  labs(
+    title = "Living longer",
+    subtitle = "Life expectancy in Malawi 1952-2007",
+    x = "",
+    y = ""
+  ) +
+  NULL
+```
+
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE, fig.dim = c(8, 5)}
+line_new
 ```
 
 It is possible to alter every aspect of a ggplot. Often you may have to change a couple of things, its important to do this after the call to the `lab_style()` function. If you do it before the `lab_style()` will override it.
@@ -100,7 +179,7 @@ line + theme(panel.grid.major.y = element_line(color="#cbcbcb"))
 ## Save out your finished chart
 After adding the lab_style() to your chart there is one more step to get your plot ready for publication: ggsave(). this will save it to your specified location. The function has several arguments:
 
-Here are the function arguments: ggsave(plot_name, save_filepath, device = ragg::agg_png, res = 300, scaling = 1, width = x, height = x, units = "in")
+Here are the function arguments: `ggsave(plot_name, save_filepath, device = ragg::agg_png, res = 300, scaling = 1, width = x, height = x, units = "in")`
 
 `plot_name`: the variable name that you have called your plot, for example for the chart example above plot_name would be "line". You can also leave this blank and ggsave will save the last plot.
 
@@ -126,16 +205,19 @@ line_df <- gapminder |>
   filter(country == "Italy") 
 
 #Make plot
-line <- ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
+line <-
+  ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
   geom_line(size = 1.2) +
   lab_style() +
   theme(legend.position = "none") + # removes legend - default is legend on the right
-  scale_y_continuous(limits = c(0,85), expand = c(0, 0)) +
-  labs(title="Living longer",
-       subtitle = "Life expectancy in Italy 1952-2007",
-       caption = "Data from gapmider package",
-       x = NULL,
-       y = NULL) +
+  scale_y_continuous(limits = c(0, 85), expand = c(0, 0)) +
+  labs(
+    title = "Living longer",
+    subtitle = "Life expectancy in Italy 1952-2007",
+    caption = "Data from gapmider package",
+    x = NULL,
+    y = NULL
+  ) +
   
   NULL
 
@@ -150,18 +232,23 @@ line
 
 ```{r}
 #Prepare data
-multiple_line_df <- gapminder |>
-  filter(country == "Italy" | country == "United States" | country == "Afghanistan" ) 
+multiple_line_df <- 
+  gapminder |>
+  filter(country == "Italy" |
+           country == "United States" | country == "Afghanistan") 
 
 #Make plot
-multiple_line <- ggplot(multiple_line_df, aes(x = year, y = lifeExp, colour = country)) +
+multiple_line <-
+  ggplot(multiple_line_df, aes(x = year, y = lifeExp, colour = country)) +
   geom_line(size = 1.2) +
   lab_style() +
-  scale_y_continuous(limits = c(0,85), expand = c(0, 0)) +
-  labs(title="Living longer",
-       subtitle = "Life expectancy in Italy, the US, and Afghanistan",
-       x = NULL,
-       y = NULL) +
+  scale_y_continuous(limits = c(0, 85), expand = c(0, 0)) +
+  labs(
+    title = "Living longer",
+    subtitle = "Life expectancy in Italy, the US, and Afghanistan",
+    x = NULL,
+    y = NULL
+  ) +
   NULL
 ```
 
@@ -186,16 +273,18 @@ bar_df <- gapminder |>
   head(5) # Selects the top 5
 
 #Make plot
-bars <- ggplot(bar_df, aes(x = country, y = lifeExp, fill=country)) +
-  geom_bar(stat="identity", 
-           position="identity" 
-           ) +
+bars <-
+  ggplot(bar_df, aes(x = country, y = lifeExp, fill = country)) +
+  geom_bar(stat = "identity",
+           position = "identity") +
   lab_style() +
-  scale_y_continuous(limits = c(0,80), expand = c(0, 0)) +
-  labs(title="Reunion is highest",
-       subtitle = "Highest African life expectancy, 2007",
-       x = NULL,
-       y = NULL) +
+  scale_y_continuous(limits = c(0, 80), expand = c(0, 0)) +
+  labs(
+    title = "Reunion is highest",
+    subtitle = "Highest African life expectancy, 2007",
+    x = NULL,
+    y = NULL
+  ) +
   NULL
 ```
 
@@ -217,7 +306,7 @@ bar_df <- gapminder |>
 bars <- ggplot(bar_df, aes(x = country, y = lifeExp)) + # NOTE: removed fill from aes
   geom_bar(stat="identity", 
            position="identity",
-           fill="#1380A1" # specified what colour we want
+           fill="#004E74" # specified what colour we want
            ) +
   lab_style() +
   theme(legend.position = "none") +
@@ -236,14 +325,14 @@ bars
 
 ## Make a stacked bar chart
 
-```{r}
+```{r, message = FALSE}
 #prepare data
-stacked_df <- gapminder %>% 
-  filter(year == 2007) %>%
+stacked_df <- gapminder |> 
+  filter(year == 2007) |>
   mutate(lifeExpGrouped = cut(lifeExp, 
                     breaks = c(0, 50, 65, 80, 90),
-                    labels = c("Under 50", "50-65", "65-80", "80+"))) %>%
-  group_by(continent, lifeExpGrouped) %>%
+                    labels = c("Under 50", "50-65", "65-80", "80+"))) |>
+  group_by(continent, lifeExpGrouped) |>
   summarise(continentPop = sum(as.numeric(pop)))
 
 #set order of stacks by changing factor levels
@@ -272,3 +361,470 @@ stacked_bars <- ggplot(data = stacked_df,
 stacked_bars
 ```
 
+## Make a grouped bar chart
+
+Making a grouped bar chart is very similar to making a bar chart.
+
+You just need to change `position = "identity"` to `position = "dodge"`, and set the fill aesthetically instead:
+
+```{r}
+#Prepare data
+grouped_bar_df <- gapminder |>
+  filter(year == 1967 | year == 2007) |>
+  select(country, year, lifeExp) |>
+  spread(year, lifeExp) |>
+  mutate(gap = `2007` - `1967`) |>
+  arrange(desc(gap)) |>
+  head(5) |>
+  gather(key = year, 
+         value = lifeExp,
+         -country,
+         -gap) 
+  
+#Make plot
+grouped_bars <- ggplot(grouped_bar_df, 
+                       aes(x = country, 
+                           y = lifeExp, 
+                           fill = as.factor(year))) +
+  geom_bar(stat="identity", position="dodge") +
+  scale_y_continuous(expand = c(0, 0)) +
+  lab_style() + 
+  theme(legend.title=element_blank()) + # remove the legend title
+  labs(title="We're living longer",
+       subtitle = "Biggest life expectancy rise, 1967-2007")
+```
+
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+grouped_bars
+```
+
+Maybe we don't want to use a dark red in this instance. The UofL colour pallet is:
+
+```{r}
+scales::show_col(c("#8B9DA1", "#AD0000", "#004E74", "#FEBE10" ,"#00A89D","#7A6C53",  "#AAB43A", "#D9C982"))
+```
+
+
+We can easily change the colors to say the yellow and green/blue (or any other colour we want - doesn't have to be one listed). Perhaps we'll add some horizontal lines and drop the axis titles too. Note how the main plot has already been saved as `grouped_bars` and we are making changes to that.
+
+
+```{r}
+grouped_bars + 
+  scale_fill_manual(values = c("#FEBE10" ,"#00A89D")) +
+  labs(title ="We're living longer",
+       subtitle = "Biggest life expectancy rise, 1967-2007",
+       x = NULL,
+       y = NULL) +
+   theme(legend.position = "top", 
+        legend.title=element_blank(),
+        panel.grid.major.y = element_line(color="#cbcbcb"))
+  
+```
+
+## Make a dumbbell chart
+
+Another way of showing difference is a dumbbell chart:
+
+```{r}
+library("ggalt")
+library("tidyr")
+
+#Prepare data
+dumbbell_df <- gapminder |>
+  filter(year == 1967 | year == 2007) |>
+  select(country, year, lifeExp) |>
+  spread(year, lifeExp) |>
+  mutate(gap = `2007` - `1967`) |>
+  arrange(desc(gap)) |>
+  head(10)
+
+#Make plot
+ggplot(dumbbell_df, aes(x = `1967`, xend = `2007`, y = reorder(country, gap), group = country)) + 
+  geom_dumbbell(colour = "#dddddd",
+                size = 3,
+                colour_x = "#FEBE10",
+                colour_xend = "#00A89D") +
+  lab_style() + 
+  theme(panel.grid.major.y = element_line(color="#cbcbcb")) +
+  labs(title="We're living longer",
+       subtitle="Biggest life expectancy rise, 1967-2007",
+       x = NULL,
+       y = NULL) 
+```
+
+In this specific case we may decide to also get rid of the axis and axis ticks!
+
+```{r}
+#Make plot
+ggplot(dumbbell_df, aes(x = `1967`, xend = `2007`, y = reorder(country, gap), group = country)) + 
+  geom_dumbbell(colour = "#dddddd",
+                size = 3,
+                colour_x = "#FEBE10",
+                colour_xend = "#00A89D") +
+  lab_style() + 
+  theme(panel.grid.major.y = element_line(color="#cbcbcb"),
+        axis.ticks = element_blank(), # Removes ticks
+        axis.line = element_blank()) + # Removes axis lines
+  labs(title="We're living longer",
+       subtitle="Biggest life expectancy rise, 1967-2007",
+       x = NULL,
+       y = NULL) 
+```
+
+## Make a histogram
+
+```{r}
+hist_df <- gapminder |>
+  filter(year == 2007)
+
+ggplot(hist_df, aes(lifeExp)) +
+  geom_histogram(binwidth = 5, colour = "white") +
+  lab_style() +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(limits = c(35, 95),
+                     breaks = seq(40, 90, by = 10),
+                     labels = c("40", "50", "60", "70", "80", "90 years")) +
+  theme(panel.grid.major.y = element_line(color="#cbcbcb")) +
+  labs(title = "How life expectancy varies",
+       subtitle = "Distribution of life expectancy in 2007",
+       x = NULL,
+       y = NULL)
+```
+
+## Add labels based on your data
+
+You can add lots of different annotations, lines, arrows etc., to your figures - though sometimes its easier to do this after the fact in another program. 
+
+Adding annotations to your chart lets you specify the x and y coordinates exactly. This is very useful if we want to add a text annotation in a specific place, but would be very tedious to repeat.
+
+Fortunately, if you want to add labels to all your data points, you can simply set the position based on your data instead.
+
+Let’s say we want to add data labels to our bar chart (we will also flip it over using `coord_flip` and custom it with some other functions):
+
+```{r, message = FALSE}
+bars + 
+  coord_flip() + # flips the chart onto its side
+  theme(panel.grid.major.x = element_line(color="#cbcbcb"), 
+        panel.grid.major.y=element_blank(), # changes our gridlines 
+        axis.line.x = element_blank(),  # remove x axis line
+        axis.ticks.x = element_blank()) + # Removes ticks 
+  scale_y_continuous(limits=c(0,85), # set the linits of the y axis
+                     expand = c(0,0), # removes gaps 
+                   breaks = seq(0, 80, by = 20), # set the breaks 0, 20, 40, 60, 80
+                   labels = c("0","20", "40", "60", "80 years")) + # here we specifically change the axis labels
+  geom_label(aes(x = country, y = lifeExp, label = round(lifeExp, 0)), # finally we use geom_label to add our text
+             hjust = 1, 
+             vjust = 0.5, 
+             colour = "white", 
+             fill = NA, 
+             label.size = NA, 
+             size = 6)
+```
+
+## Spliting charts into multiples
+
+This is easy in ggplot2 and is called faceting. You will do this a lot.
+
+### Facets
+
+If you have data that you want to visualise split up by some variable, you need to use `facet_wrap` or `facet_grid`.
+
+Add the variable you want to divide by to this line of code: `facet_wrap( ~ variable)`.
+
+An additional argument to facet wrap, `ncol`, allows you to specify the number of columns:
+
+```{r, message = FALSE}
+#Prepare data
+facet <- gapminder |>
+  filter(continent != "Americas") |> # Anything that is NOT the "Americas"
+  group_by(continent, year) |>
+  summarise(pop = sum(as.numeric(pop)))
+
+#Make plot
+facet_plot <- ggplot() +
+  geom_area(data = facet, aes(x = year, y = pop, fill = continent)) +
+  facet_wrap( ~ continent, ncol = 4) + 
+  lab_style() +
+  scale_y_continuous(breaks = c(0, 2000000000, 4000000000),
+                     labels = c(0, "2bn", "4bn")) +
+  theme(legend.position = "none",
+        axis.text.x = element_blank(),
+        panel.grid.major.y = element_line(color="#cbcbcb"),
+        axis.ticks.x = element_blank(),
+        axis.line = element_blank()) +  # remove x axis line
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") + # add our own 0 line back in to remove gap. play around and you'll see why
+  labs(title = "Asia's rapid growth",
+       subtitle = "Population growth by continent, 1952-2007",
+       x = NULL,
+       y = NULL)
+
+facet_plot
+```
+
+### Free scales
+
+You may have noticed in the chart above that Oceania, with its relatively small population, has disappeared completely.
+
+By default, faceting uses fixed axis scales across the small multiples. **It’s always best to use the same y axis scale across small multiples**, to avoid misleading, but sometimes you may need to set these independently for each multiple, which we can do by adding the argument `scales = "free"`.
+
+If you just want to free the scales for one axis set the argument to `free_x` or `free_y`.
+
+```{r}
+#Make plot
+facet_plot_free <- ggplot() +
+  geom_area(data = facet, aes(x = year, y = pop, fill = continent)) +
+  facet_wrap(~ continent, scales = "free") + 
+  lab_style() +
+  scale_y_continuous(expand = c(0,0)) +
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  theme(legend.position = "none",
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank()) +
+  labs(title = "It's all relative",
+       subtitle = "Relative population growth by continent,1952-2007")
+
+facet_plot_free
+```
+
+Anyway, like I say the possibilities are endless.
+
+# Adding P values to your figures
+
+For a more in depth view, I suggest looking at the vignettes for the [rstatix](https://github.com/kassambara/rstatix) and [ggprism](https://csdaw.github.io/ggprism/articles/pvalues.html) packages. As i mentioned the latter will style your plots like GraphPad Prism - I wont judge.
+
+```{r, message = FALSE}
+# This is just to show you the theme
+
+library(ggprism) # load the package (you may need to install it first)
+
+ggplot(ToothGrowth, aes(x = factor(dose), y = len)) + 
+  stat_summary(aes(fill = factor(dose)), na.rm = TRUE,
+               geom = "col", fun = mean, colour = "black", size = 0.9) + 
+  scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+  theme_prism()
+
+detach("package:ggprism", unload=TRUE) # we'll unload this package as we don't need it any more
+```
+
+The data I used above, `ToothGrowth` is available in R. You can view it simply by typing `ToothGrowth`. There are several datasets availiable that you can use to play around with.
+
+```{r}
+pander(head(ToothGrowth, 10)) # shows the first 10 rows. The pander func just makes in look nice.
+```
+
+## P values
+
+`labPlots` includes the `add_pvalue()` function to easily add p-values from a simple `data.frame` to your plots. This is *borrowed* directly from `ggprism` which is a re-written version of `stat_pvalue_manual()` from the `ggpubr` package, which itself is based on the `geom_signif()` function from the `ggsignif` package... `add_pvalue()` is more flexible to different inputs than `stat_pvalue_manual()` and also allows you to change the look of the brackets and text more easily.
+
+## Basic Use
+
+To add significance brackets to a plot, you need a minimal `data.frame` with 4 columns and a number of rows corresponding to the number of brackets you want to add. The 4 columns should correspond to these 4 function arguments:
+
+`xmin`, the left hand position of the bracket (default column name is "group1")
+`xmax`, the right hand position of the bracket (default column name is "group2")
+`label`, the text to go on the brackets (default column name is "label")
+`y.position`, the vertical position of the bracket (default column name is "y.position")
+
+For grouped or faceted data you’ll also need a column which is named according to the grouping variable. See the **many more examples** [here](https://csdaw.github.io/ggprism/articles/pvalues.html).
+
+Let’s see how this works in practice. First we’ll plot the `sleep` data set which is packaged with R.
+
+```{r}
+pander(head(sleep, 10))
+
+# we can also look at the structure of the data str()
+str(sleep)
+
+
+```
+
+
+
+```{r}
+# create a jitter plot of the sleep data set
+# and indicate the means
+p <- ggplot(sleep, aes(x = group, y = extra)) +
+  geom_jitter(aes(shape = group), width = 0.1) + 
+  stat_summary(geom = "crossbar", fun = mean, colour = "maroon", width = 0.2) + 
+  lab_style() + 
+  theme(legend.position = "none") +
+  labs(title = "Effect of soporific drugs on sleep",
+       y = "Extra sleep (Hours)")
+p
+```
+
+Next we’ll perform a t-test using the built in t-test function in R and obtain a p-value for the difference between the two means.
+
+```{r}
+# perform a t-test and obtain the p-value
+result <- t.test(extra ~ group, data = sleep)$p.value # run test and extract just the p.value. Run t.test(extra ~ group, data = sleep) to see all the information returned
+result <- signif(result, digits = 3) # round result to 3 significant figures
+pander(result)
+```
+
+It's not significant, but we'll go ahead anyway. Construct a p-value `data.frame` for `add_pvalue()` to use.
+
+```{r}
+df_p_val <- data.frame(
+  group1 = "1", 
+  group2 = "2",
+  label = result, # this is our p value
+  y.position = 6 # this is where we want to display it on out figure - this can be done automatically
+)
+
+pander(df_p_val)
+```
+
+Finally we’ll add this p-value to our plot. Because we have used the default column names (see above) in our p-value table we don’t necessarily have to specify any arguments of `add_pvalue()`. However, here we’ll do it for clarity’s sake. Additionally, if your p-value table has special column names, you will need to specify them in `add_pvalue()`.
+
+```{r}
+# add p-value brackets
+p1 <- p + add_pvalue(df_p_val,
+                     xmin = "group1",
+                     xmax = "group2",
+                     label = "label",
+                     y.position = "y.position",
+                     label.size = 4) 
+
+p1
+
+```
+
+Because are column names are the same we don't actually need to add them, the following will give us the same result:
+
+
+```{r}
+# add p-value brackets
+p2 <- p + add_pvalue(df_p_val, label.size = 4) 
+
+p2
+
+```
+
+## Using the `rstatix` package
+
+As `add_pvalue()` is ultimately just a rewritten version of `stat_pvalue_manual()`, it works well with the `rstatix` [package](https://github.com/kassambara/rstatix).
+
+With `rstatix`, you can perform the statistical test and create the p-value table with the appropriate x and y position automatically, in a single step. There are a lot of other useful things you can also do so check it out.
+
+Below is an example of adding multiple adjusted p values to a faceted plot.
+
+```{r}
+# Data preparation
+# here we are generating a dataframe, though often you will import one from Excel or a csv file 
+
+df <- tibble::tribble(
+  ~sample_type, ~expression, ~cancer_type,   ~gene,
+      "cancer",        25.8,       "Lung", "Gene1",
+      "cancer",        25.5,      "Liver", "Gene1",
+      "cancer",        22.4,      "Liver", "Gene1",
+      "cancer",        21.2,       "Lung", "Gene1",
+      "cancer",        24.5,      "Liver", "Gene1",
+      "cancer",        27.3,      "Liver", "Gene1",
+      "cancer",        30.9,      "Liver", "Gene1",
+      "cancer",        17.6,     "Breast", "Gene1",
+      "cancer",        19.7,       "Lung", "Gene1",
+      "cancer",         9.7,     "Breast", "Gene1",
+      "cancer",        15.2,     "Breast", "Gene2",
+      "cancer",        26.4,      "Liver", "Gene2",
+      "cancer",        25.8,       "Lung", "Gene2",
+      "cancer",         9.7,     "Breast", "Gene2",
+      "cancer",        21.2,       "Lung", "Gene2",
+      "cancer",        24.5,      "Liver", "Gene2",
+      "cancer",        14.5,     "Breast", "Gene2",
+      "cancer",        19.7,       "Lung", "Gene2",
+      "cancer",        25.2,       "Lung", "Gene2",
+      "normal",        43.5,       "Lung", "Gene1",
+      "normal",        76.5,      "Liver", "Gene1",
+      "normal",        21.9,     "Breast", "Gene1",
+      "normal",        69.9,      "Liver", "Gene1",
+      "normal",       101.7,      "Liver", "Gene1",
+      "normal",        80.1,      "Liver", "Gene1",
+      "normal",        19.2,     "Breast", "Gene1",
+      "normal",        49.5,       "Lung", "Gene1",
+      "normal",        34.5,     "Breast", "Gene1",
+      "normal",        51.9,       "Lung", "Gene1",
+      "normal",        67.5,       "Lung", "Gene2",
+      "normal",          30,     "Breast", "Gene2",
+      "normal",        76.5,      "Liver", "Gene2",
+      "normal",        88.5,      "Liver", "Gene2",
+      "normal",        69.9,      "Liver", "Gene2",
+      "normal",        49.5,       "Lung", "Gene2",
+      "normal",        80.1,      "Liver", "Gene2",
+      "normal",        79.2,      "Liver", "Gene2",
+      "normal",        12.6,     "Breast", "Gene2",
+      "normal",        97.5,      "Liver", "Gene2",
+      "normal",        64.5,      "Liver", "Gene2"
+  )
+
+```
+
+The `rstatix` has a useful function to get summary data called `get_summary_stats()` if you want to get the details of this or any R function you can type `?function()` so in this case it would be `?get_summary_stats()`. 
+
+```{r}
+# Summary statistics
+df |>
+  group_by(gene, cancer_type, sample_type) |>
+  get_summary_stats(expression, type = "common") |>
+  pander()
+```
+
+Run the test and adjust the p values for multiple comparisons. Here we will use `holm` which is similar to the `bonferroni` adjustment (though not as strict). You can find all the available methods by typing `?adjust_pvalue()`
+
+```{r}
+# Statistical test
+# group the data by cancer type and gene
+# Compare expression values of normal and cancer samples
+stat.test <- df |>
+  group_by(cancer_type, gene) |>
+  t_test(expression ~ sample_type) |> # here we are running t-tests on each of the groups generated above
+  adjust_pvalue(method = "holm") |>
+  add_significance() # This is the function from rstatix that generates our usable p value table
+
+pander(stat.test)
+```
+
+Plot our data and add the p values
+
+```{r}
+# Create boxplot
+
+bxp <-
+  df |>
+  ggplot() +
+  geom_boxplot(aes(x = sample_type, y = expression, fill = sample_type), alpha = 0.7) +
+  scale_fill_manual(values = c("#AD0000", "#AAB43A")) + # change colours manualy - we could also omit any colour
+  facet_grid(gene~cancer_type) +
+  ylim(NA,120) + # Adjust the limits to male room for p values (not always needed)
+  lab_style() +
+  labs(title = "Cancer associated genes")
+
+# Add adjusted p-values
+stat.test <- 
+  stat.test |> 
+  add_xy_position(x = "sample_type")
+
+bxp + add_pvalue(stat.test, label = "p.adj")
+```
+
+Of course we may not care about non-significant findings, in which case we can simply drop them.
+
+```{r}
+# Hide ns
+bxp + add_pvalue(
+  filter(stat.test, p.adj < 0.05), label = "p.adj", #filter out any value less than 0.05
+  
+  )
+```
+
+Or just go for the good ole * system
+
+```{r}
+# Hide ns
+bxp + add_pvalue(
+  filter(stat.test, p.adj < 0.05), label = "p.adj.signif",
+  
+  )
+```
