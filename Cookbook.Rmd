@@ -18,7 +18,7 @@ knitr::opts_chunk$set(dev = "ragg_png")
 
 last updated "`r Sys.Date()`"
 
-This repo contains the functions of the `labPlots` package, which, once installed locally, provides useful functions for creating graphics made in ggplot in the style used by the Collins Lab. The package and this doc borrows (steals) heavily from the bbplots package and makes use of the ggPrism code for adding P values to plots (as an aside, if you want your plots to look like they were made in GraphPad prism, the ggprism package is for you!).
+This repo contains the functions of the `labPlots` package, which, once installed locally, provides useful functions for creating graphics made in ggplot2 in the style the Collins Lab uses. The package and this doc borrows (steals) heavily from the bbplots package and makes use of the ggPrism code for adding P values to plots (as an aside, if you want your plots to look like they were made in GraphPad prism, the ggprism package is for you!).
 
 ## Load all the libraries you need
 
@@ -45,7 +45,6 @@ pacman::p_load(
   'grid',
   'ggpubr',
   'scales',
-  'labPlots',
   'rstatix',
   'pander'
 )
@@ -64,7 +63,8 @@ devtools::install_github("JT-Collins/labPlots")
 ```
 
 ## Seting up font and colours
-You must ensure you have the **Gotham Book** font installed on your computer. This font is used in the lab PowerPoint and Poster templates, as well as the plots for consistency. If not already installed, the **Gotham Book** fonts can be found on BOX `~\Box\Lab Docs\R projects\aesthetics\fonts`. For Windows machines, the fonts can be installed by simply double-clicking. To initiate the fon't in R run `lab_fonts()` following the loading of the `labPlots` package
+
+You must ensure the **Gotham Book** font is installed on your computer. This font is used in the lab PowerPoint and Poster templates, as well as the plots for consistency. If not already installed, the **Gotham Book** fonts can be found on BOX `~\Box\Lab Docs\R projects\aesthetics\fonts`. For Windows machines, the fonts can be installed by simply double-clicking. To initiate the font in R, run `lab_fonts()` following the loading of the `labPlots` package
 
 Depending on the plot, you may want/need to change the colors used. However, as a default, we will use the UofL color palette.
 
@@ -73,17 +73,17 @@ The package has three functions,`lab_fonts()` as i've mentioned,  `lab_style()`,
 
 `lab_fonts()`: Sets fonts to Gotham Book. Run it once at the start of a session.
 
-`lab_style()`: Has no arguments and is added to the ggplot ‘chain’ after you have created a plot. What it does is generally makes text size, font and colour, axis lines, axis text, margins and many other standard chart components into Lab style.
+`lab_style()`: Has no arguments and is added to the ggplot ‘chain’ after you have created a plot. It generally makes text size, font and colour, axis lines, axis text, margins, and many other standard chart components into Lab style.
 
 Note that colours for lines in the case of a line chart or bars for a bar chart, are based on the UofL colour scheme but can be set to other colours where needed.
 
-`add_pvalue()` can be used to add the p values to a plot. These need to be calculated first using any suitable method see [Here](https://csdaw.github.io/ggprism/articles/pvalues.html) for details. If you want to use an R package that will output your P value in the correct format, then `rstatix` is what you want. See  [Here](https://github.com/kassambara/rstatix) for in depth info. I will provide examples later on. 
+`add_pvalue()` can add the p values to a plot. These need to be calculated first using any suitable method; see [Here](https://csdaw.github.io/ggprism/articles/pvalues.html) for details. If you want to use an R package that will output your P-value in the correct format, then `rstatix` is what you want. See  [Here](https://github.com/kassambara/rstatix) for in-depth info. I will provide examples later on. 
 
-The code below shows how the `lab_style()` should be used within standard chart-production workflow. This is an example for a very simple line chart, using data from the gapminder package.
+The code below shows how the `lab_style()` should be used within the standard chart-production workflow. This is an example of a straightforward line chart using data from the gapminder package.
 
-# Default Figure
+## Default Figure
 
-Before we load up the fonts and make changes lets look at a default line graph
+Before we load up the fonts and make changes, let's look at a default line graph
 
 ```{r}
 #Data for chart from gapminder package
@@ -92,23 +92,8 @@ line_df <- gapminder |>
 
 #Make plot
 line_old <-
-  ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
+  ggplot(line_df, aes(x = year, y = lifeExp, colour = 'country')) +
   geom_line() +
-  labs(
-    title = "Living longer",
-    subtitle = "Life expectancy in Malawi 1952-2007",
-    x = "",
-    y = ""
-  ) +
-  NULL
-
-#Make plot
-line_new <-
-  ggplot(line_df, aes(x = year, y = lifeExp, colour = country)) +
-  geom_line(size = 1.2) +
-  lab_style() +
-  theme(legend.position = "none") + # removes legend - default is legend on the right
-  scale_y_continuous(limits = c(0, 85), expand = c(0, 0)) + # limits sets y axis limits and expand removes white space (compare to previos plot). Feel free to delete this to see the default behaviour!
   labs(
     title = "Living longer",
     subtitle = "Life expectancy in Malawi 1952-2007",
@@ -163,9 +148,9 @@ line_new <-
 line_new
 ```
 
-It is possible to alter every aspect of a ggplot. Often you may have to change a couple of things, its important to do this after the call to the `lab_style()` function. If you do it before the `lab_style()` will override it.
+It is possible to alter every aspect of a ggplot. Often you may have to change a couple of things, it's important to do this after the call to the `lab_style()` function. If you do it before, the `lab_style()` will override it.
 
-For example, this will add some gridlines, by adding extra theme arguments to what is included in the lab_style() function. There are many similar examples throughout the cookbook.
+For example, this will add some gridlines by adding extra theme arguments to what is included in the lab_style() function. There are many similar examples throughout the cookbook.
 
 ```{r, echo=T, results='hide'}
 theme(panel.grid.major.y = element_line(color="#cbcbcb"))
@@ -177,13 +162,13 @@ line + theme(panel.grid.major.y = element_line(color="#cbcbcb"))
 ```
 
 ## Save out your finished chart
-After adding the lab_style() to your chart there is one more step to get your plot ready for publication: ggsave(). this will save it to your specified location. The function has several arguments:
+After adding the lab_style() to your chart, one more step to get your plot ready for publication: ggsave(). This will save it to your specified location. The function has several arguments:
 
 Here are the function arguments: `ggsave(plot_name, save_filepath, device = ragg::agg_png, res = 300, scaling = 1, width = x, height = x, units = "in")`
 
-`plot_name`: the variable name that you have called your plot, for example for the chart example above plot_name would be "line". You can also leave this blank and ggsave will save the last plot.
+`plot_name`: the variable name that you have called your plot; for example, for the chart example above plot_name would be "line". You can also leave this blank and ggsave will save the last plot.
 
-`save_filepath`: the precise filepath that you want your graphic to save to, including the `.png` extension at the end. This does depend on your working directory and if you are in a specific R project. An example filepath would be: `Desktop/R_projects/charts/line_chart.png`
+`save_filepath`: the precise filepath that you want your graphic to save to, including the `.png` extension at the end. This does depend on your working directory and if you are in a specific R project. An example file path would be: `Desktop/R_projects/charts/line_chart.png`
 
 `width, height, units`: Plot size in units ("in", "cm", "mm", or "px"). If not supplied, uses the size of current graphics device.
 
@@ -193,9 +178,9 @@ Here are the function arguments: `ggsave(plot_name, save_filepath, device = ragg
 
 more information can be found by typing `?ggsave()` into the console.
 
-Once you have created your plot and are relatively happy with it, you can use the `ggsave()` function to make the final adjustments and save out your chart so that you can look at it outside RStudio.
+Once you have created your plot and are relatively happy with it, you can use the `ggsave()` function to make the final adjustments and save your chart so that you can look at it outside RStudio.
 
-It is important to mention that it is a good idea to do this early on because the position of the text and other elements do not render accurately in the RStudio Plots panel because this depends on the size and aspect ratio you want your plot to appear, so saving it out and opening up the files give you an accurate representation of how the graphic looks.
+It is a good idea to do this early on. The position of the text and other elements do not render accurately in the RStudio Plots panel because this depends on the size and aspect ratio of your plot. Saving and opening up the files give you an accurate representation of how the graphic looks.
 
 ## Make a line chart
 
@@ -257,7 +242,7 @@ multiple_line <-
 multiple_line
 ```
 
-If we wanted to move the legend to the bottom of the figure we could simply do the following:
+If we wanted to move the legend to the bottom of the figure, we could simply do the following:
 
 ```{r}
 multiple_line + theme(legend.position = "bottom")
@@ -453,7 +438,7 @@ ggplot(dumbbell_df, aes(x = `1967`, xend = `2007`, y = reorder(country, gap), gr
        y = NULL) 
 ```
 
-In this specific case we may decide to also get rid of the axis and axis ticks!
+In this case we may decide to also get rid of the axis and axis ticks!
 
 ```{r}
 #Make plot
@@ -494,9 +479,9 @@ ggplot(hist_df, aes(lifeExp)) +
 
 ## Add labels based on your data
 
-You can add lots of different annotations, lines, arrows etc., to your figures - though sometimes its easier to do this after the fact in another program. 
+You can add lots of different annotations, lines, arrows, etc., to your figures - though sometimes it's easier to do this after the fact in another program. 
 
-Adding annotations to your chart lets you specify the x and y coordinates exactly. This is very useful if we want to add a text annotation in a specific place, but would be very tedious to repeat.
+Adding annotations to your chart lets you specify exactly the x and y coordinates. This is very useful if we want to add a text annotation in a specific place, but would be very tedious to repeat.
 
 Fortunately, if you want to add labels to all your data points, you can simply set the position based on your data instead.
 
@@ -528,7 +513,7 @@ This is easy in ggplot2 and is called faceting. You will do this a lot.
 
 ### Facets
 
-If you have data that you want to visualise split up by some variable, you need to use `facet_wrap` or `facet_grid`.
+If you have data that you want to visualize split up by some variable, you need to use `facet_wrap` or `facet_grid`.
 
 Add the variable you want to divide by to this line of code: `facet_wrap( ~ variable)`.
 
@@ -564,11 +549,11 @@ facet_plot
 
 ### Free scales
 
-You may have noticed in the chart above that Oceania, with its relatively small population, has disappeared completely.
+You may have noticed in the chart above that Oceania has disappeared entirely with its relatively small population.
 
 By default, faceting uses fixed axis scales across the small multiples. **It’s always best to use the same y axis scale across small multiples**, to avoid misleading, but sometimes you may need to set these independently for each multiple, which we can do by adding the argument `scales = "free"`.
 
-If you just want to free the scales for one axis set the argument to `free_x` or `free_y`.
+If you just want to free the scales for one axis, set the argument to `free_x` or `free_y`.
 
 ```{r}
 #Make plot
@@ -620,14 +605,14 @@ pander(head(ToothGrowth, 10)) # shows the first 10 rows. The pander func just ma
 
 ## Basic Use
 
-To add significance brackets to a plot, you need a minimal `data.frame` with 4 columns and a number of rows corresponding to the number of brackets you want to add. The 4 columns should correspond to these 4 function arguments:
+To add significance brackets to a plot, you need a minimal `data.frame` with 4 columns and several rows corresponding to the number of brackets you want to add. The 4 columns should correspond to these 4 function arguments:
 
-`xmin`, the left hand position of the bracket (default column name is "group1")
-`xmax`, the right hand position of the bracket (default column name is "group2")
+`xmin`, the left-hand position of the bracket (default column name is "group1")
+`xmax`, the right-hand position of the bracket (default column name is "group2")
 `label`, the text to go on the brackets (default column name is "label")
 `y.position`, the vertical position of the bracket (default column name is "y.position")
 
-For grouped or faceted data you’ll also need a column which is named according to the grouping variable. See the **many more examples** [here](https://csdaw.github.io/ggprism/articles/pvalues.html).
+For grouped or faceted data, you’ll also need a column which is named according to the grouping variable. See the **many more examples** [here](https://csdaw.github.io/ggprism/articles/pvalues.html).
 
 Let’s see how this works in practice. First we’ll plot the `sleep` data set which is packaged with R.
 
@@ -655,7 +640,7 @@ p <- ggplot(sleep, aes(x = group, y = extra)) +
 p
 ```
 
-Next we’ll perform a t-test using the built in t-test function in R and obtain a p-value for the difference between the two means.
+Next, we’ll perform a t-test using the built in t-test function in R and obtain a p-value for the difference between the two means.
 
 ```{r}
 # perform a t-test and obtain the p-value
@@ -677,7 +662,7 @@ df_p_val <- data.frame(
 pander(df_p_val)
 ```
 
-Finally we’ll add this p-value to our plot. Because we have used the default column names (see above) in our p-value table we don’t necessarily have to specify any arguments of `add_pvalue()`. However, here we’ll do it for clarity’s sake. Additionally, if your p-value table has special column names, you will need to specify them in `add_pvalue()`.
+Finally, we’ll add this p-value to our plot. Because we have used the default column names (see above) in our p-value table, we don’t necessarily have to specify any `add_pvalue()` arguments.  However, here we’ll do it for clarity’s sake. Additionally, if your p-value table has special column names, you will need to specify them in `add_pvalue()`.
 
 ```{r}
 # add p-value brackets
@@ -692,7 +677,7 @@ p1
 
 ```
 
-Because are column names are the same we don't actually need to add them, the following will give us the same result:
+Because our column names are the same we don't actually need to add them, the following will give us the same result:
 
 
 ```{r}
@@ -707,7 +692,7 @@ p2
 
 As `add_pvalue()` is ultimately just a rewritten version of `stat_pvalue_manual()`, it works well with the `rstatix` [package](https://github.com/kassambara/rstatix).
 
-With `rstatix`, you can perform the statistical test and create the p-value table with the appropriate x and y position automatically, in a single step. There are a lot of other useful things you can also do so check it out.
+With `rstatix`, you can automatically perform the statistical test and create the p-value table with the appropriate x and y position in a single step. There are a lot of other useful things you can also do so check it out.
 
 Below is an example of adding multiple adjusted p values to a faceted plot.
 
@@ -794,7 +779,8 @@ Plot our data and add the p values
 bxp <-
   df |>
   ggplot() +
-  geom_boxplot(aes(x = sample_type, y = expression, fill = sample_type), alpha = 0.7) +
+  geom_boxplot(aes(x = sample_type, y = expression, fill = sample_type),alpha = 0.7) +
+  geom_point(aes(x = sample_type, y = expression),alpha = 0.4) +
   scale_fill_manual(values = c("#AD0000", "#AAB43A")) + # change colours manualy - we could also omit any colour
   facet_grid(gene~cancer_type) +
   ylim(NA,120) + # Adjust the limits to male room for p values (not always needed)
@@ -809,7 +795,7 @@ stat.test <-
 bxp + add_pvalue(stat.test, label = "p.adj")
 ```
 
-Of course we may not care about non-significant findings, in which case we can simply drop them.
+Of course, we may not care about non-significant findings, in which case we can simply drop them.
 
 ```{r}
 # Hide ns
