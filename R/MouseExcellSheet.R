@@ -1,9 +1,9 @@
 
 
 
-mouseEx <- function(Spreadsheet_name = paste0("Mouse_Experiment_", Sys.Date()), 
-                    exp_length = 14, 
-                    group_name = c("Control", "Group A", "Group B"), 
+mouseEx <- function(Spreadsheet_name = paste0("Mouse_Experiment_", Sys.Date()),
+                    exp_length = 14,
+                    group_name = c("Control", "Group A", "Group B"),
                     mouse_num = c(5, 5, 5)) {
 
 if(!require(pacman))install.packages("pacman")
@@ -12,12 +12,6 @@ pacman::p_load('openxlsx')
 
 
 # Variables ---------------------------------------------------------------
-# Change only these components to fit your experiment
-
-# Spreadsheet_name <- "Cdifficile_UroA_June2022"
-# exp_length <- 7 # Length of experiment in Days
-# group_name <- c("Control", "Sucrose", "Fructose", "test", "one more") # Name of groups
-# mouse_num <- c(4, 7, 6, 9, 3) # Number of mice per group
 
 group_num <- length(group_name)
 total_mice <- sum(mouse_num)
@@ -28,14 +22,12 @@ for (i in mouse_num){
 }
 
 
-
 # Excel Column names ------------------------------------------------------
 # Generates a list of excel column names A -> ZZ
 
 all <- expand.grid(LETTERS, LETTERS)
 all <- all[order(all$Var1,all$Var2),]
-excel_col <- c(LETTERS, do.call('paste0',all)) 
-
+excel_col <- c(LETTERS, do.call('paste0',all))
 
 
 # Generate Workbook -------------------------------------------------------
@@ -69,16 +61,16 @@ stool_dat <- data.frame(
   x = rep(group_name,times = mouse_num*3),
   y = rep(c(paste0(rep(group_name,times = mouse_num), "_", mnum)), each = 3),
   z = rep(c("Tube", "Total", "Stool"), times = total_mice)
-) 
+)
 
 clin_dat <- data.frame(
-  
+
   Day = rep(1:exp_length, each =  total_mice*5),
   #Group = rep(rep(group_name,times = mouse_num*5), times = exp_length),
   Mouse = rep(rep(c(paste0(rep(group_name,times = mouse_num), "_", mnum)), each = 5), times = exp_length),
   Catagory = rep(c("Activity", "Posture", "Coat", "Diarrhea", "Eyes_Nose"), times = total_mice*exp_length),
   Score = NA
-  
+
 )
 
 weight_percent <- data.frame(
@@ -86,9 +78,9 @@ weight_percent <- data.frame(
   B = NA,
   C = rep(group_name,times = mouse_num),
   D = c(paste0(rep(group_name,times = mouse_num), "_", mnum)),
-  E = paste(paste(paste0("E", 1:total_mice + 2L), 
+  E = paste(paste(paste0("E", 1:total_mice + 2L),
                   paste0("$E", 1:total_mice + 2L), sep = " / "), " * 100")
-  
+
 ) # The mouse groups, IDs, and formula for percent mouse weight
 
 # summary stats
@@ -97,7 +89,7 @@ weight_sum <- data.frame(
   b = NA,
   c = c("Group",rep(group_name, each = 2)),
   d = c("Summary", rep(c("Mean", "SD"),group_num))
-  
+
 )
 
 class(weight_percent$E) <- c(class(weight_percent$E), "formula")
@@ -105,7 +97,7 @@ class(weight_percent$E) <- c(class(weight_percent$E), "formula")
 surv_dat <- data.frame(
   x = rep(group_name,each = (exp_length+1)),
   y = rep(0:exp_length, group_num)
-  
+
 )
 
 
@@ -118,13 +110,13 @@ bg_colours <- c("#FFD9FA", "#FFEB97","#E5F0DA",  "#E5D8D3", "#E4DDED", "#FBDEE1"
 
 
 BoldCtrUnder <- createStyle(
-  fontSize = 11, textDecoration = "bold", halign = "center", 
-  valign = "center",  border = "bottom", borderStyle = "double" 
+  fontSize = 11, textDecoration = "bold", halign = "center",
+  valign = "center",  border = "bottom", borderStyle = "double"
 )
 
 BoldCtr <- createStyle(
   fontSize = 11, textDecoration = "bold", halign = "center",
-  valign = "center" 
+  valign = "center"
 )
 
 
@@ -150,12 +142,6 @@ addStyle(wb, sheet = "Mouse Weights", style = Ctr,
          rows = 3:((total_mice)+2), cols = 1:4, gridExpand = T, stack = TRUE)
 addStyle(wb, sheet = "Mouse Weights", style = Ctr,
          rows = (7 + total_mice):(((total_mice)*2)+6), cols = 1:4, gridExpand = T, stack = TRUE)
-
-# addStyle(wb, sheet = "Mouse Weights", style = num_style,
-#          rows = 3:((group_num*mouse_num)+2), cols = 3:(exp_length + 5), gridExpand = T, stack = TRUE)
-# 
-# addStyle(wb, sheet = "Mouse Weights", style = num_style,
-#          rows = (7 + group_num*mouse_num):(((group_num*mouse_num)*2)+6), cols = 3:(exp_length + 5), gridExpand = T, stack = TRUE)
 
 addStyle(wb, sheet = "Stool Weights", style = BoldCtrUnder,
          rows = 2, cols = 1:(exp_length + 3), gridExpand = FALSE, stack = FALSE) #Bold Underline headers
@@ -191,14 +177,14 @@ addStyle(wb, sheet = "Survival", style = Ctr,
 
 #writeData(wb, "Mouse Weights", x = "Add daily mouse weights below", startRow = 1, startCol = 1, colNames = FALSE)
 writeData(wb, "Mouse Weights", x = "Mouse Weight", startRow = 1, startCol = 5, colNames = FALSE) #write "Days" and merge cells
-mergeCells(wb, "Mouse Weights", cols = 5:(exp_length+5), rows = 1) # 
+mergeCells(wb, "Mouse Weights", cols = 5:(exp_length+5), rows = 1) #
 writeData(wb, "Mouse Weights", x = t(weight_names), startRow = 2,colNames = FALSE) # Generate column names
 writeData(wb, "Mouse Weights", x = weight_dat, startRow = 3,colNames = FALSE) # Fill in group and mouse names
 
 current = 3
 for (g in 1:group_num){
-  
-  mergeCells(wb, "Mouse Weights", cols = 1, 
+
+  mergeCells(wb, "Mouse Weights", cols = 1,
              rows = current :((current + mouse_num[g])-1)) # Merge group name cells with loop
   current = current + mouse_num[g]
 }
@@ -208,19 +194,19 @@ current = 3
 for (c in 1:group_num)
 {
   new_bg <- createStyle(fgFill = bg_colours[c], border = "TopBottomLeftRight")
-  addStyle(wb, "Mouse Weights", new_bg  ,cols = 1:(5+exp_length), 
-           rows = current :((current + mouse_num[c])-1) ,gridExpand = T, stack = T) 
+  addStyle(wb, "Mouse Weights", new_bg  ,cols = 1:(5+exp_length),
+           rows = current :((current + mouse_num[c])-1) ,gridExpand = T, stack = T)
   current = current + mouse_num[c]
 }
 
 
 # Percent weights ---------------------------------------------------------
 
-writeData(wb, "Mouse Weights", x = "Percent weight gain/loss", startRow = (total_mice)+5, 
+writeData(wb, "Mouse Weights", x = "Percent weight gain/loss", startRow = (total_mice)+5,
           startCol = 5, colNames = FALSE) # write "Percent weight gain/loss" and merge cells
-mergeCells(wb, "Mouse Weights", cols = 5:(exp_length+5), rows = (total_mice)+5) # merge 
+mergeCells(wb, "Mouse Weights", cols = 5:(exp_length+5), rows = (total_mice)+5) # merge
 
-writeData(wb, "Mouse Weights", x = t(weight_names[! weight_names %in% c("Min Weight", "Sex")]), 
+writeData(wb, "Mouse Weights", x = t(weight_names[! weight_names %in% c("Min Weight", "Sex")]),
           startRow = (total_mice)+6, startCol = 3, colNames = FALSE) # Generate column names
 writeData(wb, "Mouse Weights", x = weight_percent, startRow = (total_mice)+7,colNames = FALSE) # Fill in group and mouse names
 
@@ -239,8 +225,8 @@ current = 7 + total_mice
 for (c in 1:group_num)
 {
   new_bg <- createStyle(fgFill = bg_colours[c], border = "TopBottomLeftRight")
-  addStyle(wb, "Mouse Weights", new_bg  ,cols = 3:(5+exp_length), 
-           rows = current :((current + mouse_num[c])-1), gridExpand = T, stack = T) 
+  addStyle(wb, "Mouse Weights", new_bg  ,cols = 3:(5+exp_length),
+           rows = current :((current + mouse_num[c])-1), gridExpand = T, stack = T)
   current = current + mouse_num[c]
 }
 
@@ -252,62 +238,9 @@ for (d in 6:(exp_length+5)){
   for (m in (7+total_mice):(6+(total_mice*2))){
     current_mouse = m - (total_mice+4)
     writeFormula(wb, 1, x = paste0(current_col,current_mouse,"/E",current_mouse,"*100" ), startCol = d, startRow = m)
-    
+
   }
 }
-
-# # Mean and SD
-# 
-# writeData(wb, "Mouse Weights", x = weight_sum, startRow = ((total_mice)*2)+9,colNames = FALSE)
-# 
-# # calculate the rows that the summary data will be on for each group
-# sum_row_M <- seq((total_mice*2) + 10, (total_mice*2)+(group_num*2) + 8, by=2)
-# sum_row_SD <- sum_row_M + 1
-# 
-# 
-# # Add the mean weight formula for all relevant cells
-# for (d in 5:(exp_length+5)){
-#   current_col = excel_col[d]
-#   # Calculate where the top and bottom of the range will be
-#   range_top <- (total_mice)+7
-#   range_bottom <- range_top + (mouse_num-1)
-#   for (r in sum_row_M){
-#     
-#     writeFormula(wb, "Mouse Weights", 
-#                  x = paste0('=AVERAGEIF(', current_col,range_top,':', current_col, range_bottom,',"<>0")' )
-#                  , startCol = d, startRow = r, array = TRUE)
-#     range_top <- range_top + mouse_num
-#     range_bottom <- range_bottom + mouse_num
-#   }
-# }
-# 
-# # Add the SD formula for all relevant cells
-# for (d in 5:(exp_length+5)){
-#   current_col = excel_col[d]
-#   # Calculate where the top and bottom of the range will be
-#   range_top <- (total_mice)+7
-#   range_bottom <- range_top + (mouse_num-1)
-#   for (r in sum_row_SD){
-#     
-#     writeFormula(wb, "Mouse Weights", array = TRUE,
-#                  x = paste0('=STDEV.P(IF(ISNUMBER(1/', current_col,range_top,':', current_col, range_bottom,'),IF(',
-#                             current_col,range_top,':', current_col, range_bottom,'<>0,',current_col,range_top,':', current_col, range_bottom, ')))')
-#                  , startCol = d, startRow = r)
-#     range_top <- range_top + mouse_num
-#     range_bottom <- range_bottom + mouse_num
-#   }
-# }
-# 
-# 
-# fc <- c(0) # use for fill colour
-# for (c in seq(0,((group_num*2)-2), by =2 ))
-# {
-#   fc <- fc + 1
-#   new_bg <- createStyle(fgFill = bg_colours[fc], border = "TopBottomLeftRight")
-#   addStyle(wb, "Mouse Weights", new_bg  ,cols = 3:(5+exp_length),
-#            rows = (((total_mice*2)+10)+c):((((total_mice*2)+10)+1)+c),gridExpand = T, stack = T)
-# }
-
 
 # Clinical Score ----------------------------------------------------------
 
@@ -316,7 +249,7 @@ writeData(wb, "Clinical Score", x = clin_dat, startRow = 1,colNames = TRUE) # Fi
 # Merge "Mouse"
 for (g in seq(2, ((total_mice*5)*exp_length), by= 5))
 {
-  mergeCells(wb, "Clinical Score", cols = 2, 
+  mergeCells(wb, "Clinical Score", cols = 2,
              rows = g:(g+4)
   ) # Merge mouse name cells with loop
 }
@@ -330,7 +263,7 @@ for (x in 1:exp_length) {
       createStyle(fgFill = bg_colours[c],
                   border = "TopBottomLeftRight",
                   numFmt = "0")
-    
+
     addStyle(
       wb,
       "Clinical Score",
@@ -340,7 +273,7 @@ for (x in 1:exp_length) {
       gridExpand = T,
       stack = T
     )
-    
+
     current = current + mouse_num[c] * 5
   }
 }
@@ -361,12 +294,11 @@ for (c in seq(4, exp_length+4)){
 }
 
 
-
-# Merge "Group"  
+# Merge "Group"
 current = 3
 for (g in 1:group_num)
 {
-  mergeCells(wb, "Stool Weights", cols = 1, 
+  mergeCells(wb, "Stool Weights", cols = 1,
              rows = current :((current + (mouse_num[g])*3)-1)) # Merge group name cells with loop
   current = current + (mouse_num[g] * 3)
 }
@@ -374,20 +306,19 @@ for (g in 1:group_num)
 # Merge "Mouse"
 for (g in seq(3, (total_mice*3), by= 3))
 {
-  mergeCells(wb, "Stool Weights", cols = 2, 
+  mergeCells(wb, "Stool Weights", cols = 2,
              rows = g:(g+2)
   ) # Merge group name cells with loop
 }
 
 
-
-# add some colour to distinguish the groups **********************
+# add some colour to distinguish the groups
 current = 3
 for (c in 1:group_num)
 {
   new_bg <- createStyle(fgFill = bg_colours[c], border = "TopBottomLeftRight", halign = "center", valign = "center" )
-  addStyle(wb, "Stool Weights", new_bg  ,cols = 1:(4+exp_length), 
-           rows = current :((current + (mouse_num[c])*3)-1), gridExpand = T, stack = T)  
+  addStyle(wb, "Stool Weights", new_bg  ,cols = 1:(4+exp_length),
+           rows = current :((current + (mouse_num[c])*3)-1), gridExpand = T, stack = T)
   current = current + (mouse_num[c] * 3)
 }
 
@@ -406,7 +337,7 @@ writeData(wb, "Survival", x = surv_dat[ , c("x", "y")] , startRow = 2,colNames =
 
 y <- 1
 for (x in seq(2, ((exp_length+1)*group_num),exp_length+1)){
-  
+
   writeData(wb, "Survival", x = 0 , startCol = 3, startRow = x,colNames = FALSE) # Fill in first dead cell
   writeData(wb, "Survival", x = mouse_num[y] , startCol = 4, startRow = x,colNames = FALSE) # Fill in first alive cell
   writeData(wb, "Survival", x = 1 , startCol = 6, startRow = x,colNames = FALSE) # Fill in first S(t) cell
