@@ -8,7 +8,7 @@ mouseEx <- function(Spreadsheet_name = paste0("Mouse_Experiment_", Sys.Date()),
 
 if(!require(pacman))install.packages("pacman")
 
-pacman::p_load('openxlsx', 'magick')
+pacman::p_load('openxlsx')
 
 
 # Variables ---------------------------------------------------------------
@@ -25,7 +25,8 @@ for (i in mouse_num){
 # Image -------------------------------------------------------------------
 
 # read in image from package
-img <- magick::image_read(system.file("figures/clinScore.png", "labPlots"))
+img <- system.file("figures/clinScore.png", package="labPlots")
+
 
 
 # Excel Column names ------------------------------------------------------
@@ -48,7 +49,7 @@ addWorksheet(wb, "Mouse Weights")
 addWorksheet(wb, "Clinical Score")
 addWorksheet(wb, "Stool Weights")
 addWorksheet(wb, "Survival")
-insertImage(wb, "Clinical Score", img, startRow = 2, startCol = 6) # add our Clinical scores table
+insertImage(wb, "Clinical Score", img, startRow = 2, startCol = 6, width = 8.19, height = 2.13, units = "in") # add our Clinical scores table
 
 
 weight_names <- c("Group", "Mouse", "Min Weight","Sex", 0:exp_length) #col names for weights page
