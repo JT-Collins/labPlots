@@ -60,7 +60,7 @@ lab_style <- function() {
     plot.title = ggplot2::element_text(
       family = font,
       size = 16,
-      face = "regular",
+      face = "plain",
       color = "#222222",
       margin = ggplot2::margin(0, 0, 7.5, 0, unit = "pt")
     ),
