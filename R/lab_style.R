@@ -59,8 +59,8 @@ lab_style <- function() {
     # This sets the font, size, type and colour of text for the chart's title
     plot.title = ggplot2::element_text(
       family = font,
-      size = 20,
-      face = "bold",
+      size = 16,
+      face = "regular",
       color = "#222222",
       margin = ggplot2::margin(0, 0, 7.5, 0, unit = "pt")
     ),
@@ -69,11 +69,11 @@ lab_style <- function() {
 
     plot.subtitle = ggplot2::element_text(
       family = font,
-      size = 14,
+      size = 12,
       margin = ggplot2::margin(0, 0, 10, 0)
     ),
     plot.caption = ggplot2::element_text(
-      family = font, size = 11, hjust = 1,
+      family = font, size = 10, hjust = 1,
       vjust = 1, margin = ggplot2::margin(5, 0, 5, 0, unit = "points")
     ),
 
@@ -88,7 +88,7 @@ lab_style <- function() {
     legend.key = ggplot2::element_blank(),
     legend.text = ggplot2::element_text(
       family = font,
-      size = 12,
+      size = 10,
       color = "#222222"
     ),
 
@@ -99,24 +99,24 @@ lab_style <- function() {
 
     axis.text = ggplot2::element_text(
       family = font,
-      size = 12,
+      size = 10,
       color = "#222222"
     ),
     axis.text.x = ggplot2::element_text(margin = ggplot2::margin(5.4, 0, 0, 0)),
     axis.ticks = ggplot2::element_line(color = "gray20"),
     axis.ticks.length = unit(3,"pt"),
     axis.title.y = ggplot2::element_text(family = font,
-                                         size = 12,
+                                         size = 11,
                                          hjust = 1,
                                          angle = 90,
                                          margin = ggplot2::margin(0, 3, 0, 0, unit = "pt")),
     axis.title.y.right = ggplot2::element_text(family = font,
-                                               size = 12,
+                                               size = 11,
                                                hjust = 1,
                                                angle = 90,
                                                margin = ggplot2::margin(0, 0, 0, 3, unit = "pt")),
     axis.title.x = ggplot2::element_text(family = font,
-                                         size = 12,
+                                         size = 11,
                                          hjust = 1,
                                          margin = ggplot2::margin(3, 0, 0, 0, unit = "pt")),
     axis.title.x.top = ggplot2::element_text(family = font,
@@ -143,7 +143,7 @@ lab_style <- function() {
 
     strip.background = ggplot2::element_blank(),
     strip.text = ggplot2::element_text(
-      size = 12, hjust = 0, colour = "grey10", face = "plain",
+      size = 11, hjust = 0, colour = "grey10", face = "plain",
       margin = ggplot2::margin(4.6, 4.6, 4.6, 4.6, unit = "pt")
     ),
   )
