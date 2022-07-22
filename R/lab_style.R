@@ -14,11 +14,11 @@
 lab_fonts <- function() {
   if(!require(pacman))install.packages("pacman")
 
-  pacman::p_load('remotes', 'showtext')
+
   if (packageVersion("Rttf2pt1") != '1.3.8') {
     remotes::install_version("Rttf2pt1", version = "1.3.8")
   }
-
+  pacman::p_load('remotes', 'showtext')
 
   # sysfonts::font_add(family = "Gotham-Book",
   #                    regular = "~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF",
@@ -52,14 +52,14 @@ lab_style <- function() {
   font <- "Gotham-Book" #"assistant"
   # showtext::showtext_opts(dpi = 96)
 
-  ggplot2::theme(
+ggplot2::theme(
 
     # Text format:
-    text = ggplot2::element_text(family = font, size = 12, color = "#2b2b2b", lineheight = 0.8),
+    text = ggplot2::element_text(family = font, size = 14, color = "#2b2b2b", lineheight = 1.1),
     # This sets the font, size, type and colour of text for the chart's title
     plot.title = ggplot2::element_text(
       family = font,
-      size = 16,
+      size = 14,
       face = "plain",
       color = "#222222",
       margin = ggplot2::margin(0, 0, 7.5, 0, unit = "pt")
@@ -99,24 +99,24 @@ lab_style <- function() {
 
     axis.text = ggplot2::element_text(
       family = font,
-      size = 10,
+      size = 12,
       color = "#222222"
     ),
     axis.text.x = ggplot2::element_text(margin = ggplot2::margin(5.4, 0, 0, 0)),
     axis.ticks = ggplot2::element_line(color = "gray20"),
     axis.ticks.length = unit(3,"pt"),
     axis.title.y = ggplot2::element_text(family = font,
-                                         size = 11,
+                                         size = 12,
                                          hjust = 1,
                                          angle = 90,
                                          margin = ggplot2::margin(0, 3, 0, 0, unit = "pt")),
     axis.title.y.right = ggplot2::element_text(family = font,
-                                               size = 11,
+                                               size = 12,
                                                hjust = 1,
                                                angle = 90,
                                                margin = ggplot2::margin(0, 0, 0, 3, unit = "pt")),
     axis.title.x = ggplot2::element_text(family = font,
-                                         size = 11,
+                                         size = 12,
                                          hjust = 1,
                                          margin = ggplot2::margin(3, 0, 0, 0, unit = "pt")),
     axis.title.x.top = ggplot2::element_text(family = font,
@@ -143,8 +143,10 @@ lab_style <- function() {
 
     strip.background = ggplot2::element_blank(),
     strip.text = ggplot2::element_text(
-      size = 11, hjust = 0, colour = "grey10", face = "plain",
+      size = 12, hjust = 0, colour = "grey10", face = "plain",
       margin = ggplot2::margin(4.6, 4.6, 4.6, 4.6, unit = "pt")
     ),
   )
+
+
 }
