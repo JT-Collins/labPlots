@@ -29,4 +29,4 @@ Note that colours for lines in the case of a line chart or bars for a bar chart,
 
 `add_pvalue()` can add the p values to a plot. These need to be calculated first using any suitable method; see [Here](https://csdaw.github.io/ggprism/articles/pvalues.html) for details. If you want to use an R package that will output your P-value in the correct format, then `rstatix` is very useful. See  [Here](https://github.com/kassambara/rstatix) for in-depth info.
 
-An example of the labplots can be found at `system.file("Cookbook.html", package = "labPlots")` once installed.
+An example of the labplots can be found at `system.file("Cookbook.html", package = "labPlots")` once installed. You can open the file from R by running `browseURL(system.file("Cookbook.html", package = "labPlots"))`

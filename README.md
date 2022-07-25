@@ -45,4 +45,6 @@ in the correct format, then `rstatix` is very useful. See
 [Here](https://github.com/kassambara/rstatix) for in-depth info.
 
 An example of the labplots can be found at
-`system.file("Cookbook.html", package = "labPlots")` once installed.
+`system.file("Cookbook.html", package = "labPlots")` once installed. You
+can open the file from R by running
+`browseURL(system.file("Cookbook.html", package = "labPlots"))`
