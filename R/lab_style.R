@@ -12,11 +12,23 @@
 
 # Set font options --------------------------------------------------------
 lab_fonts <- function() {
-  if (!require(pacman))
+  if (!require(pacman)) {
     install.packages("pacman")
+  }
 
+  if (!require(remotes)){
+    install.packages('remotes')
+  }
+
+  if (!require(showtext)){
+    install.packages('showtext')
+  }
 
   pacman::p_load('remotes', 'showtext')
+
+  if (!require(Rttf2pt1)){
+    remotes::install_version("Rttf2pt1", version = "1.3.8")
+  }
 
   if (packageVersion("Rttf2pt1") != '1.3.8') {
     remotes::install_version("Rttf2pt1", version = "1.3.8")
