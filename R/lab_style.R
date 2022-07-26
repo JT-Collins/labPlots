@@ -12,28 +12,38 @@
 
 # Set font options --------------------------------------------------------
 lab_fonts <- function() {
-  if(!require(pacman))install.packages("pacman")
+  if (!require(pacman))
+    install.packages("pacman")
 
+
+  pacman::p_load('remotes', 'showtext')
 
   if (packageVersion("Rttf2pt1") != '1.3.8') {
     remotes::install_version("Rttf2pt1", version = "1.3.8")
   }
-  pacman::p_load('remotes', 'showtext')
 
   # sysfonts::font_add(family = "Gotham-Book",
-  #                    regular = "~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF",
-  #                    italic = "~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF",
-  #                    bold = "~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF")
+  #                    regular = path.expand("~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF"),
+  #                    italic = path.expand("~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF"),
+  #                    bold = path.expand("~/Box/Lab Docs/R projects/aesthetics/fonts/ALGER.TTF"))
 
-sysfonts::font_add(family = "Gotham-Book",
-          regular = "~/Box/Lab Docs/R projects/aesthetics/fonts/Gotham-Book.otf",
-          italic = "~/Box/Lab Docs/R projects/aesthetics/fonts/GothamBook Italic.otf",
-          bold = "~/Box/Lab Docs/R projects/aesthetics/fonts/Gotham-Bold.otf")
+  sysfonts::font_add(
+    family = "Gotham-Book",
+    regular = path.expand(
+      "~/Box/Lab Docs/R projects/aesthetics/fonts/Gotham-Book.otf"
+    ),
+    italic = path.expand(
+      "~/Box/Lab Docs/R projects/aesthetics/fonts/GothamBook Italic.otf"
+    ),
+    bold = path.expand(
+      "~/Box/Lab Docs/R projects/aesthetics/fonts/Gotham-Bold.otf"
+    )
+  )
 
 
   #extrafont::font_import()
-#
-showtext::showtext_auto(enable = TRUE)
+  #
+  showtext::showtext_auto(enable = TRUE)
 }
 
 # Set colour options ------------------------------------------------------

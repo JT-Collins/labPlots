@@ -36,19 +36,30 @@ pacman::p_load(
   'tidyr',
   'gapminder',
   'ggplot2',
-  'patchwork',
   'ggalt',
   'ragg',
-  'forcats',
   'R.utils',
-  'png',
-  'grid',
+  'pander',
   'ggpubr',
   'scales',
   'rstatix',
-  'pander'
+  'DT'
 )
 ```
+
+```{r, echo=FALSE}
+create_dt <- function(x){
+  DT::datatable(x,
+                #extensions = 'Buttons',
+                rownames = FALSE,
+                options = list(dom = 'Blfrtip',
+                               #buttons = c('copy', 'csv'),
+                               lengthMenu = list(c(10,25,50,-1),
+                                                 c(10,25,50,"All"))))
+}
+```
+
+
 
 ## Installing labPlots package
 
@@ -57,7 +68,7 @@ pacman::p_load(
 If you do not have the `devtools` package installed, you will also have to run the first line in the code below. **<span style="color: darkslategray;">Hint - remove the '#' from the first line if you need to install devtools.</span>**
 
 
-```
+```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("JT-Collins/labPlots")
 ```
@@ -596,7 +607,7 @@ detach("package:ggprism", unload=TRUE) # we'll unload this package as we don't n
 The data I used above, `ToothGrowth` is available in R. You can view it simply by typing `ToothGrowth`. There are several datasets availiable that you can use to play around with.
 
 ```{r}
-pander(head(ToothGrowth, 10)) # shows the first 10 rows. The pander func just makes in look nice.
+create_dt(ToothGrowth)
 ```
 
 ## P values
@@ -617,7 +628,7 @@ For grouped or faceted data, you’ll also need a column which is named accordin
 Let’s see how this works in practice. First we’ll plot the `sleep` data set which is packaged with R.
 
 ```{r}
-pander(head(sleep, 10))
+create_dt(sleep)
 
 # we can also look at the structure of the data str()
 str(sleep)
@@ -753,7 +764,7 @@ The `rstatix` has a useful function to get summary data called `get_summary_stat
 df |>
   group_by(gene, cancer_type, sample_type) |>
   get_summary_stats(expression, type = "common") |>
-  pander()
+  create_dt()
 ```
 
 Run the test and adjust the p values for multiple comparisons. Here we will use `holm` which is similar to the `bonferroni` adjustment (though not as strict). You can find all the available methods by typing `?adjust_pvalue()`
@@ -768,7 +779,11 @@ stat.test <- df |>
   adjust_pvalue(method = "holm") |>
   add_significance() # This is the function from rstatix that generates our usable p value table
 
-pander(stat.test)
+stat.test |>
+  mutate_if(is.numeric,
+            round,
+            digits = 4) |>
+  create_dt()
 ```
 
 Plot our data and add the p values
@@ -781,7 +796,7 @@ bxp <-
   ggplot() +
   geom_boxplot(aes(x = sample_type, y = expression, fill = sample_type),alpha = 0.7) +
   geom_point(aes(x = sample_type, y = expression),alpha = 0.4) +
-  scale_fill_manual(values = c("#AD0000", "#AAB43A")) + # change colours manualy - we could also omit any colour
+  scale_fill_manual(values = c("#AD0000", "#FEBE10")) + # change colours manualy - we could also omit any colour
   facet_grid(gene~cancer_type) +
   ylim(NA,120) + # Adjust the limits to male room for p values (not always needed)
   lab_style() +
